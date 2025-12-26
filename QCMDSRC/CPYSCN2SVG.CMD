@@ -7,7 +7,7 @@
              PARM       KWD(PATH) TYPE(*PNAME) MIN(1) LEN(128) +
                           PROMPT('Pfad für svg-Dateien')
 
-             PARM       KWD(PREFIX) TYPE(*NAME) LEN(64) +
+             PARM       KWD(PREFIX) TYPE(*PNAME) LEN(64) +
                           DFT('cpyscn2svg') +
                           PROMPT('Präfix für svg-files')
              PARM       KWD(INCDATE) TYPE(*CHAR) LEN(10) +
