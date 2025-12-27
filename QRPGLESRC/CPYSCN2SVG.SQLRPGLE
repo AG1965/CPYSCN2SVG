@@ -1,5 +1,5 @@
 **FREE
-Ctl-Opt MAIN(MAIN) DECEDIT('0.') OPTION(*SRCSTMT : *NODEBUGIO: *NOUNREF)
+Ctl-Opt MAIN(MAIN) DECEDIT('0.') OPTION(*NODEBUGIO:*SRCSTMT:*NOUNREF)
         ACTGRP('CPYSCN2SVG')
         TEXT('Converts the output of STRCPYSCN to svg');
 // -----------------------------------------------------------------------------
@@ -16,7 +16,6 @@ Dcl-PR MAIN EXTPGM('CPYSCN2SVG');
    IFS_CntDigits   UNS(5);
    IFS_IncSepChar CHAR(  1);
    IFS_Output     LIKEDS(list_Output_T);
-   CSS_Output     CHAR( 10);
    CSS            CHAR(128);
    CSS_externals  LIKEDS(list_externals_T);
 End-PR;
@@ -41,7 +40,7 @@ Dcl-C #CRLF x'0D25';
 Dcl-S g_charWidth   UNS(5) INZ(12);
 Dcl-S g_charSize    UNS(5) INZ(20);
 
-/COPY QSYSCPY,DQCMDEXC
+/INCLUDE 'QSYSCPY/DQCMDEXC.RPGLEINC'
 
 // Dcl-F QASCCPY DISK EXTFILE('QASCCPY') TEMPLATE;
 
@@ -80,8 +79,6 @@ End-DS;
 
 Dcl-S #Cmd    VARCHAR(32000);
 
-Dcl-S #Buffer VARCHAR(4096);
-
 Dcl-S #CSS VARCHAR(4096) INZ('');
 
 // =================================================================================================
@@ -110,6 +107,7 @@ Dcl-Proc MAIN;
       MD     IND INZ(*OFF);
    End-DS;
 
+   // --------------------------------------------------------------------------
    // create Directory
    #Cmd = 'MKDIR ''' + %TRIMR(PI_IFS_Path) + '''';
    MONITOR;
@@ -133,11 +131,11 @@ Dcl-Proc MAIN;
    ' .l_CS { stroke: turquoise; stroke-width: 1px; stroke-opacity: 0.5; }' + #CRLF;
 
 
-
-   #IFS_CSS_FileName = %TRIMR(PI_CSS);
-   IF #IFS_CSS_FileName <> '*INTERNAL' AND
-      #IFS_CSS_FileName <> '*NONE';
-      IF %SUBST(#IFS_CSS_FileName:%LEN(#IFS_CSS_FileName - 3:4)) <> '.css';
+   // name of the css to be created in IFS
+   IF PI_CSS <> '*INTERNAL' AND
+      PI_CSS <> '*NONE';
+      #IFS_CSS_FileName = %TRIMR(PI_CSS);
+      IF %SUBST(#IFS_CSS_FileName:%LEN(#IFS_CSS_FileName) - 3:4) <> '.css';
          #IFS_CSS_FileName += '.css';
       ENDIF;
       #IFS_CSS_FullName = %TRIMR(PI_IFS_Path) +'/' + #IFS_CSS_FileName;
@@ -150,13 +148,13 @@ Dcl-Proc MAIN;
    ENDIF;
 
 
-   #output.HTML = %lookup('*HTML':PI_IFS_Output(*).entry) > 0;
-   #output.MD   = %lookup('*MD'  :PI_IFS_Output(*).entry) > 0;
+   #output.HTML = %lookup('*HTML':PI_IFS_Output.entry) > 0;
+   #output.MD   = %lookup('*MD'  :PI_IFS_Output.entry) > 0;
 
    IF #output.HTML;
       f_writeLineHTML(
          '<!DOCTYPE html>' + #CRLF +
-         '<html lang="de">' + #CRLF +
+         '<html lang="en">' + #CRLF +
          '<head>' + #CRLF +
          '    <meta charset="UTF-8">' + #CRLF +
          '    <meta name="viewport" content="width=device-width, initial-scale=1.0">' + #CRLF +
@@ -166,19 +164,20 @@ Dcl-Proc MAIN;
    ENDIF;
 
    IF #output.MD;
-      f_writeLineMD('# Testdokumentation' + #CRLF);
+      f_writeLineMD('# CPYSCN2SVG converted screenshots' + #CRLF);
    ENDIF;
 
 
 
 
 
-
+   // Override the system supplied outfile for STRCPYSCN
    #Cmd = 'OVRDBF QASCCPY TOFILE(' + %TRIMR(PI_SCNCPY.Lib) + '/' +
                                      %TRIMR(PI_SCNCPY.Name) + ')';
 
    QCMDEXC(#Cmd:%LEN(#Cmd));
 
+   // Declare a cursor to a result set that contains one line per screen and provides the number of lines (24 or 27)
    EXEC SQL DECLARE CPYSCN2SVG_1 CURSOR FOR
             SELECT MAX(SIROW),
                   CURCEN, CURDAT, CURTIM
@@ -204,6 +203,7 @@ Dcl-Proc MAIN;
          screen.columns =  80;
       ENDIF;
 
+      // now declare a second cursor to fetch the actual screen data for this screen
       EXEC SQL DECLARE CPYSCN2SVG_2 CURSOR FOR
                SELECT SIDATA
                FROM QASCCPY
@@ -222,7 +222,7 @@ Dcl-Proc MAIN;
 
       EXEC SQL CLOSE CPYSCN2SVG_2;
 
-
+      // build the svg filename
       #IFS_SVG_FileName = PI_IFS_Prefix;
 
       SELECT;
@@ -261,6 +261,7 @@ Dcl-Proc MAIN;
       #IFS_SVG_FileName += '.svg';
       #IFS_SVG_FullName = PI_IFS_Path + '/' + #IFS_SVG_FileName;
 
+      // generate the svg file
       f_svg(#IFS_CSS_FileName:
             PI_CSS_externals);
 
@@ -297,8 +298,8 @@ End-Proc;
 Dcl-Proc f_svg;
 
    Dcl-PI *N;
-      PI_CSS_Filename   VARCHAR(128);
-      PI_CSS_externals  LIKEDS(list_externals_T);
+      myCSS            VARCHAR(128) CONST;
+      myCSS_externals  LIKEDS(list_externals_T) CONST;
    End-PI;
 
    Dcl-S charHeight  UNS(5);
@@ -315,6 +316,8 @@ Dcl-Proc f_svg;
    Dcl-S #char1          CHAR(1);
    Dcl-S #classString VARCHAR(18);
    Dcl-S #svgString   VARCHAR(1024);
+
+   Dcl-S #i UNS(5);
 
    // --------------------------------------------------------------------------
    charHeight = g_charSize + 2;
@@ -335,23 +338,28 @@ Dcl-Proc f_svg;
                   '>');
 
    SELECT;
-      WHEN PI_CSS = '*NONE';
-      WHEN PI_CSS = '*INTERNAL';
+      WHEN myCSS = '*NONE';
+      WHEN myCSS = '*INTERNAL';
          f_writeLineSVG('<style type="text/css">' + #CRLF +
          '  <![CDATA[' + #CRLF +
          #CSS +
          '  ]]>' + #CRLF +
          '</style>');
+      OTHER;
+         f_writeLineSVG('<link xmlns="http://www.w3.org/1999/xhtml"' +
+                        ' rel="stylesheet"' +
+                        ' href="' + myCSS + '"' +
+                        ' type="text/css" />');
    ENDSL;
 
-   IF #IFS_CSS_FileName <> '';
+   FOR #i = 1 TO myCSS_externals.count;
       f_writeLineSVG('<link xmlns="http://www.w3.org/1999/xhtml"' +
                      ' rel="stylesheet"' +
-                     ' href="' + #IFS_CSS_FileName + '"' +
+                     ' href="' + %TRIMR(myCSS_externals.entry(#i)) + '"' +
                      ' type="text/css" />');
-   ENDIF;
+   ENDFOR;
 
-
+   // TODO: background rectangle for reverse image
    // f_writeLineSVG('<rect x="0" y="0" width="1" height="1" class="t" />');
 
    FOR #row = 1 TO screen.rows;
@@ -361,7 +369,7 @@ Dcl-Proc f_svg;
                                 %SUBST(RS2(#row).SIDATA:#col:1):
                                 #classString);
 
-         #charWidth = %LEN(%SUBST(RS2(#row).SIDATA:#col:1));
+         // #charWidth = %LEN(%SUBST(RS2(#row).SIDATA:#col:1)); // TODO: das kann ja nur 1 sein?!
          IF #char1 <> *BLANK;
             f_writeLineSVG('<text x="' + %CHAR(svgPosX) + '"' +
                            ' y="' + %CHAR(svgPosY) + '"' +
@@ -371,29 +379,29 @@ Dcl-Proc f_svg;
 
          IF %SCAN(' UL':#classString) > 0;
             f_writeLineSVG('<line x1="' + %CHAR(svgPosX - 1) + '"' +
-                             ' y1="' + %CHAR(svgPosY + 1) + '"' +
-                             ' x2="' + %CHAR(svgPosX + charWidth - 1) + '"' +
-                             ' y2="' + %CHAR(svgPosY + 1) + '"' +
-                           ' class="l_UL" />');
+                                ' y1="' + %CHAR(svgPosY + 1) + '"' +
+                                ' x2="' + %CHAR(svgPosX + g_charWidth - 1) + '"' +
+                                ' y2="' + %CHAR(svgPosY + 1) + '"' +
+                                ' class="l_UL" />');
          ENDIF;
          IF %SCAN(' HI BL CS':#classString) > 0;
             #classString = %SCANRPL(' HI BL CS':' HIBLCS':#classString);
          ELSE;
             IF %SCAN(' CS':#classString) > 0;
                f_writeLineSVG('<line x1="' + %CHAR(svgPosX - 1) + '"' +
-                                ' y1="' + %CHAR(svgPosY) + '"' +
-                                ' x2="' + %CHAR(svgPosX - 1) + '"' +
-                                ' y2="' + %CHAR(svgPosY - 2) + '"' +
-                                ' class="l_CS" />');
-               f_writeLineSVG('<line x1="' + %CHAR(svgPosX + charWidth - 1) + '"' +
-                                ' y1="' + %CHAR(svgPosY) + '"' +
-                                ' x2="' + %CHAR(svgPosX + charWidth - 1) + '"' +
-                                ' y2="' + %CHAR(svgPosY - 2) + '"' +
-                                ' class="l_CS" />');
+                                   ' y1="' + %CHAR(svgPosY) + '"' +
+                                   ' x2="' + %CHAR(svgPosX - 1) + '"' +
+                                   ' y2="' + %CHAR(svgPosY - 2) + '"' +
+                                   ' class="l_CS" />');
+               f_writeLineSVG('<line x1="' + %CHAR(svgPosX + g_charWidth - 1) + '"' +
+                                   ' y1="' + %CHAR(svgPosY) + '"' +
+                                   ' x2="' + %CHAR(svgPosX + g_charWidth - 1) + '"' +
+                                   ' y2="' + %CHAR(svgPosY - 2) + '"' +
+                                   ' class="l_CS" />');
             ENDIF;
          ENDIF;
 
-         svgPosX += charWidth;
+         svgPosX += g_charWidth;
       ENDFOR;
       svgPosX  = 0;
       svgPosY += charHeight;
