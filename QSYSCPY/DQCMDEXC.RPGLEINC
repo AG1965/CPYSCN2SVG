@@ -1,0 +1,11 @@
+**free                                                                          
+/IF DEFINED(DQCMDEXC)                                                           
+/EOF                                                                            
+/ENDIF                                                                          
+/DEFINE DQCMDEXC                                                                
+// -----------------------------------------------------------------------------
+// https://www.ibm.com/docs/en/i/7.4?topic=ssw_ibm_i_74/apis/qcmdexc.html       
+Dcl-PR QCMDEXC  EXTPGM('QSYS/QCMDEXC');                                         
+   Cmd            Char(32702) CONST OPTIONS(*VARSIZE);                          
+   CmdLen         Packed(15:5) CONST;                                           
+End-PR;                                                                         

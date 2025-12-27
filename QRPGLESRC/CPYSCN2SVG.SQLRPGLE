@@ -1,11 +1,11 @@
 **FREE
 Ctl-Opt MAIN(MAIN) DECEDIT('0.') OPTION(*SRCSTMT : *NODEBUGIO: *NOUNREF)
         ACTGRP('CPYSCN2SVG')
-        TEXT('Konvertiert die Ausgabe von STRCPYSCN in svg');
+        TEXT('Converts the output of STRCPYSCN to svg');
 // -----------------------------------------------------------------------------
-// Konvertiert die Ausgabe von STRCPYSCN in svg
+// Converts the output of STRCPYSCN to svg files
 //
-// TOOL-42
+// https://github.com/AG1965/CPYSCN2SVG
 // -----------------------------------------------------------------------------
 Dcl-PR MAIN EXTPGM('CPYSCN2SVG');
    qualSCNCPY     LIKEDS(qualObj_T);
@@ -41,7 +41,6 @@ Dcl-C #CRLF x'0D25';
 Dcl-S g_charWidth   UNS(5) INZ(12);
 Dcl-S g_charSize    UNS(5) INZ(20);
 
-/COPY QSYSCPY,DSDS
 /COPY QSYSCPY,DQCMDEXC
 
 // Dcl-F QASCCPY DISK EXTFILE('QASCCPY') TEMPLATE;
