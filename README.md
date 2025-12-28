@@ -72,6 +72,11 @@ The mapping is done in CSS; so you could use the same svg files in dark mode on 
 
 ## Samples
 
+![cpyscn01-002.svg](samples/cpyscn01-002.svg)
+
+![cpyscn01-002.svg](samples/cpyscn01-014.svg)
+
+
 ## how to create
 
 Download the repo to your IBM i, e.g. to /OSS/CPYSCN2SVG.
