@@ -9,15 +9,15 @@ Ctl-Opt MAIN(MAIN) DECEDIT('0.') OPTION(*NODEBUGIO:*SRCSTMT:*NOUNREF)
 // -----------------------------------------------------------------------------
 Dcl-PR MAIN EXTPGM('CPYSCN2SVG');
    qualSCNCPY     LIKEDS(qualObj_T);
-   IFS_Path       CHAR(128);
-   IFS_Prefix     CHAR( 64);
-   IFS_IncDate    CHAR( 10);
-   IFS_IncTime    CHAR( 10);
-   IFS_CntDigits   UNS(5);
-   IFS_IncSepChar CHAR(  1);
-   IFS_Output     LIKEDS(list_Output_T);
-   CSS            CHAR(128);
-   CSS_externals  LIKEDS(list_externals_T);
+   IFS_Path          CHAR(128);
+   IFS_Prefix        CHAR( 64);
+   IFS_IncDate       CHAR( 10);
+   IFS_IncTime       CHAR( 10);
+   IFS_CntDigits   PACKED(1:0);
+   IFS_IncSepChar    CHAR(  1);
+   IFS_Output      LIKEDS(list_Output_T);
+   CSS               CHAR(128);
+   CSS_externals   LIKEDS(list_externals_T);
 End-PR;
 
 Dcl-DS qualObj_T QUALIFIED TEMPLATE;
@@ -26,13 +26,24 @@ Dcl-DS qualObj_T QUALIFIED TEMPLATE;
 End-DS;
 
 Dcl-DS list_Output_T QUALIFIED TEMPLATE;
-   count   INT(10);
-   entry  CHAR(10) DIM(5);
+   count   INT(5);
+   entry  CHAR(10) DIM(2);
 End-DS;
 
 Dcl-DS list_externals_T QUALIFIED TEMPLATE;
-   count   INT(10);
+   count   INT(5);
    entry  CHAR(128) DIM(5);
+End-DS;
+
+
+Dcl-DS colorsGrnOnWht QUALIFIED;
+   grn  CHAR(7) DFT('#006400');
+   wht  CHAR(7) DFT('#000000');
+   blu  CHAR(7) DFT('#003399');
+   trq  CHAR(7) DFT('#008b8b');
+   red  CHAR(7) DFT('#b00020');
+   pnk  CHAR(7) DFT('#a000a0');
+   ylw  CHAR(7) DFT('#9a8700');
 End-DS;
 
 Dcl-C #CRLF x'0D25';
@@ -79,22 +90,22 @@ End-DS;
 
 Dcl-S #Cmd    VARCHAR(32000);
 
-Dcl-S #CSS VARCHAR(4096) INZ('');
+Dcl-S g_CSS_string VARCHAR(4096) INZ('');
 
 // =================================================================================================
 
 Dcl-Proc MAIN;
    Dcl-PI *N;
-      PI_SCNCPY         LIKEDS(qualObj_T);
-      PI_IFS_Path       CHAR(128);
-      PI_IFS_Prefix     CHAR( 64);
-      PI_IFS_IncDate    CHAR( 10);
-      PI_IFS_IncTime    CHAR( 10);
-      PI_IFS_CntDigits   UNS(5);
-      PI_IFS_IncSepChar CHAR(  1);
-      PI_IFS_Output     LIKEDS(list_Output_T);
-      PI_CSS            CHAR(128);
-      PI_CSS_externals  LIKEDS(list_externals_T);
+      PI_SCNCPY          LIKEDS(qualObj_T);
+      PI_IFS_Path          CHAR(128);
+      PI_IFS_Prefix        CHAR( 64);
+      PI_IFS_IncDate       CHAR( 10);
+      PI_IFS_IncTime       CHAR( 10);
+      PI_IFS_CntDigits   PACKED(1:0);
+      PI_IFS_IncSepChar    CHAR(  1);
+      PI_IFS_Output      LIKEDS(list_Output_T);
+      PI_CSS               CHAR(128);
+      PI_CSS_externals   LIKEDS(list_externals_T);
    End-PI;
 
    Dcl-DS #FileCount QUALIFIED;
@@ -121,18 +132,31 @@ Dcl-Proc MAIN;
    #IFS_MD_FullName   = %TRIMR(PI_IFS_Path) +'/' + %TRIMR(PI_IFS_Prefix) +
                         '.md';
 
-   #CSS =
-   ' .t {  font-family: IBM3270, Consolas, monospace;' + #CRLF +
-   '       font-size: ' + %CHAR(g_charSize) + 'px; }' + #CRLF +
-   ' .BL { fill: red; }' + #CRLF +
-   ' .CS { fill: turquoise; }' + #CRLF +
-   ' .HI .BL .CS { fill: blue; }' + #CRLF +
-   ' .l_UL { stroke: currentColor; stroke-width: 1px; }' + #CRLF +
-   ' .l_CS { stroke: turquoise; stroke-width: 1px; stroke-opacity: 0.5; }' + #CRLF;
 
+   // .txt-green   { fill: #006400; }
+   // .txt-white   { fill: #000000; }
+   // .txt-blue    { fill: #003399; }
+   // .txt-turq    { fill: #008b8b; }
+   // .txt-red     { fill: #b00020; }
+   // .txt-pink    { fill: #a000a0; }
+   // .txt-yellow  { fill: #9a8700; }
+
+   g_CSS_string =
+   ' .t {  font-family: IBM3270, Consolas, monospace;' + #CRLF +
+   '       font-size: ' + %CHAR(g_charSize) + 'px;' + #CRLF +
+   '       fill: #006400;' + #CRLF +
+   '       text-align: center; }' + #CRLF +
+   ' .HI { font-weight: bold; fill: #000000; }' + #CRLF +
+   ' .BL { fill: #b00020; }' + #CRLF +
+   ' .CS { fill: #008b8b; }' + #CRLF +
+   ' .BL.CS { fill: #a000a0; }' + #CRLF +
+   ' .HI.BL.CS { fill: #003399; }' + #CRLF +
+   ' .l_UL { stroke: currentColor; stroke-width: 1px; }' + #CRLF +
+   ' .l_CS { stroke: #008b8b; stroke-width: 1px; stroke-opacity: 0.5; }' + #CRLF;
 
    // name of the css to be created in IFS
-   IF PI_CSS <> '*INTERNAL' AND
+   #IFS_CSS_FileName = PI_CSS;
+   IF PI_CSS <> '*INLINE' AND
       PI_CSS <> '*NONE';
       #IFS_CSS_FileName = %TRIMR(PI_CSS);
       IF %SUBST(#IFS_CSS_FileName:%LEN(#IFS_CSS_FileName) - 3:4) <> '.css';
@@ -141,7 +165,7 @@ Dcl-Proc MAIN;
       #IFS_CSS_FullName = %TRIMR(PI_IFS_Path) +'/' + #IFS_CSS_FileName;
 
       EXEC SQL CALL QSYS2.IFS_WRITE_UTF8( PATH_NAME  => :#IFS_CSS_FullName,
-                                          LINE       => :#CSS,
+                                          LINE       => :g_CSS_string,
                                           FILE_CCSID => 1208,
                                           OVERWRITE  => 'REPLACE');
 
@@ -159,8 +183,32 @@ Dcl-Proc MAIN;
          '    <meta charset="UTF-8">' + #CRLF +
          '    <meta name="viewport" content="width=device-width, initial-scale=1.0">' + #CRLF +
          '    <title>CPYSCN2SVG</title>' + #CRLF +
+         '    <style type="text/css">' + #CRLF +
+         '        html, body { font-family: Arial, Verdana, sans-serif; }' + #CRLF +
+         '        img { display: block; width: 80%; margin-bottom: 10px; border:1px solid black; }' + #CRLF +
+         '        code { display: block;' + #CRLF +
+         '               font-family: Consolas, monospace; ' + #CRLF +
+         '               border:1px solid grey;' + #CRLF +
+         '               background-color: #f0f0f0;' + #CRLF + 
+         '               padding: 12px; }' + #CRLF +
+         '    </style>' + #CRLF +
          '</head>' + #CRLF +
-         '<body>' + #CRLF);
+         '<body>' + #CRLF +
+         '<h1>CPYSCN2SVG output</h1>' + #CRLF +
+         '<p>The following files have been created with:</p>' + #CRLF +
+         '<code>CPYSCN2SVG FILE(' + %TRIMR(PI_SCNCPY.Lib) + '/' +
+                                    %TRIMR(PI_SCNCPY.Name) + ')' +
+                         ' PATH(''' + %TRIMR(PI_IFS_Path) + ''')' +
+                         ' PREFIX(''' + %TRIMR(PI_IFS_Prefix) + ''')' +
+                         ' INCDATE(' + %TRIMR(PI_IFS_IncDate) + ')' +
+                         ' INCTIME(' + %TRIMR(PI_IFS_IncTime) + ')' +
+                         ' INCCNT(' + %CHAR(PI_IFS_CntDigits) + ')' +
+                         ' INCSEP(''' + PI_IFS_IncSepChar + ''')' +
+                         ' OUTPUT(' + %CONCATARR(' ':PI_IFS_Output.entry) + ')' +     
+                         ' CSS(''' + PI_CSS + ''')' +
+                         ' CSSEXT(' + %CONCATARR(' ':PI_CSS_externals.entry) + ')' +     
+         '</code>' + #CRLF
+         );
    ENDIF;
 
    IF #output.MD;
@@ -223,7 +271,7 @@ Dcl-Proc MAIN;
       EXEC SQL CLOSE CPYSCN2SVG_2;
 
       // build the svg filename
-      #IFS_SVG_FileName = PI_IFS_Prefix;
+      #IFS_SVG_FileName = %TRIMR(PI_IFS_Prefix);
 
       SELECT;
          WHEN PI_IFS_IncDate = '*ISO';
@@ -259,14 +307,20 @@ Dcl-Proc MAIN;
       ENDIF;
 
       #IFS_SVG_FileName += '.svg';
-      #IFS_SVG_FullName = PI_IFS_Path + '/' + #IFS_SVG_FileName;
+      #IFS_SVG_FullName = %TRIMR(PI_IFS_Path) + '/' + #IFS_SVG_FileName;
 
       // generate the svg file
       f_svg(#IFS_CSS_FileName:
             PI_CSS_externals);
 
       IF #output.HTML;
-         f_writeLineHTML('<img src="' + #IFS_SVG_FileName + '">');
+         f_writeLineHTML(
+            '<p><a href="' + #IFS_SVG_FileName + '">' +
+                             #IFS_SVG_FileName + '</a><br>' +
+            '<img src="' + #IFS_SVG_FileName + '"' +
+                ' alt="' + #IFS_SVG_FileName + '"' +
+            '></p>'
+         );
       ENDIF;
 
       IF #output.MD;
@@ -339,10 +393,10 @@ Dcl-Proc f_svg;
 
    SELECT;
       WHEN myCSS = '*NONE';
-      WHEN myCSS = '*INTERNAL';
+      WHEN myCSS = '*INLINE';
          f_writeLineSVG('<style type="text/css">' + #CRLF +
          '  <![CDATA[' + #CRLF +
-         #CSS +
+         g_CSS_string +
          '  ]]>' + #CRLF +
          '</style>');
       OTHER;
@@ -353,6 +407,10 @@ Dcl-Proc f_svg;
    ENDSL;
 
    FOR #i = 1 TO myCSS_externals.count;
+      IF %TRIMR(myCSS_externals.entry(#i)) = '' OR
+                myCSS_externals.entry(#i)  = '*NONE';
+         ITER;
+      ENDIF;
       f_writeLineSVG('<link xmlns="http://www.w3.org/1999/xhtml"' +
                      ' rel="stylesheet"' +
                      ' href="' + %TRIMR(myCSS_externals.entry(#i)) + '"' +
@@ -378,7 +436,7 @@ Dcl-Proc f_svg;
          ENDIF;
 
          IF %SCAN(' UL':#classString) > 0;
-            f_writeLineSVG('<line x1="' + %CHAR(svgPosX - 1) + '"' +
+            f_writeLineSVG('<line x1="' + %CHAR(f_subToZero(svgPosX:1)) + '"' +
                                 ' y1="' + %CHAR(svgPosY + 1) + '"' +
                                 ' x2="' + %CHAR(svgPosX + g_charWidth - 1) + '"' +
                                 ' y2="' + %CHAR(svgPosY + 1) + '"' +
@@ -388,15 +446,15 @@ Dcl-Proc f_svg;
             #classString = %SCANRPL(' HI BL CS':' HIBLCS':#classString);
          ELSE;
             IF %SCAN(' CS':#classString) > 0;
-               f_writeLineSVG('<line x1="' + %CHAR(svgPosX - 1) + '"' +
+               f_writeLineSVG('<line x1="' + %CHAR(f_subToZero(svgPosX:1)) + '"' +
                                    ' y1="' + %CHAR(svgPosY) + '"' +
-                                   ' x2="' + %CHAR(svgPosX - 1) + '"' +
-                                   ' y2="' + %CHAR(svgPosY - 2) + '"' +
+                                   ' x2="' + %CHAR(f_subToZero(svgPosX:1)) + '"' +
+                                   ' y2="' + %CHAR(f_subToZero(svgPosY:2)) + '"' +
                                    ' class="l_CS" />');
                f_writeLineSVG('<line x1="' + %CHAR(svgPosX + g_charWidth - 1) + '"' +
                                    ' y1="' + %CHAR(svgPosY) + '"' +
                                    ' x2="' + %CHAR(svgPosX + g_charWidth - 1) + '"' +
-                                   ' y2="' + %CHAR(svgPosY - 2) + '"' +
+                                   ' y2="' + %CHAR(f_subToZero(svgPosY:2)) + '"' +
                                    ' class="l_CS" />');
             ENDIF;
          ENDIF;
@@ -418,17 +476,16 @@ Dcl-Proc f_writeLineSVG;
       myLine VARCHAR(1024) CONST;
    End-PI;
 
-   Dcl-S #IFSFILENAME LIKE(#IFS_SVG_FileName);
    Dcl-S #OVERWRITE   VARCHAR(9) INZ('REPLACE') STATIC;
 
    // new svg = overwite existing file
-   IF %LEN(myLine) >= 4;
+   IF %LEN(myLine) >= 5;
       IF %SUBST(myLine:1:5) = '<svg ';
          RESET #OVERWRITE;
       ENDIF;
    ENDIF;
 
-   EXEC SQL CALL QSYS2.IFS_WRITE_UTF8(PATH_NAME  => :#IFS_SVG_FileName,
+   EXEC SQL CALL QSYS2.IFS_WRITE_UTF8(PATH_NAME  => :#IFS_SVG_FullName,
                                       LINE       => :myLine,
                                       FILE_CCSID => 1208,
                                       OVERWRITE  => :#OVERWRITE);
@@ -556,3 +613,22 @@ Dcl-Proc f_processChar;
 
 End-Proc;
 
+
+// -------------------------------------------------------------------------------------------------
+Dcl-Proc f_subToZero;
+   Dcl-PI *N LIKE(rtnValue);
+      myValue           UNS(10) CONST;
+      mySub             UNS(10) CONST;
+   End-PI;
+
+   Dcl-S rtnValue UNS(10);
+
+   IF myValue < mySub;
+      rtnValue = 0;
+   ELSE;
+      rtnValue = myValue - mySub;
+   ENDIF;
+
+   RETURN rtnValue;
+
+End-Proc;

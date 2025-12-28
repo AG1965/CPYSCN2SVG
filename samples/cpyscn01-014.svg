@@ -1,0 +1,678 @@
+<svg xmlns="http://www.w3.org/2000/svg" height="616" width="1584" preserveAspectRatio="xMinYMin meet" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">
+<style type="text/css">
+  <![CDATA[
+ .t {  font-family: IBM3270, Consolas, monospace;
+       font-size: 20px;
+       fill: #006400;
+       text-align: center; }
+ .HI { font-weight: bold; fill: #000000; }
+ .BL { fill: #b00020; }
+ .CS { fill: #008b8b; }
+ .BL.CS { fill: #a000a0; }
+ .HI.BL.CS { fill: #003399; }
+ .l_UL { stroke: currentColor; stroke-width: 1px; }
+ .l_CS { stroke: #008b8b; stroke-width: 1px; stroke-opacity: 0.5; }
+  ]]>
+</style>
+<text x="12" y="22" class="t HI">V</text>
+<text x="24" y="22" class="t HI">e</text>
+<text x="36" y="22" class="t HI">r</text>
+<text x="48" y="22" class="t HI">z</text>
+<text x="60" y="22" class="t HI">e</text>
+<text x="72" y="22" class="t HI">i</text>
+<text x="84" y="22" class="t HI">c</text>
+<text x="96" y="22" class="t HI">h</text>
+<text x="108" y="22" class="t HI">.</text>
+<text x="120" y="22" class="t HI">:</text>
+<text x="144" y="22" class="t">/</text>
+<text x="156" y="22" class="t">h</text>
+<text x="168" y="22" class="t">o</text>
+<text x="180" y="22" class="t">m</text>
+<text x="192" y="22" class="t">e</text>
+<text x="204" y="22" class="t">/</text>
+<text x="216" y="22" class="t">a</text>
+<text x="228" y="22" class="t">n</text>
+<text x="240" y="22" class="t">g</text>
+<text x="252" y="22" class="t">o</text>
+<text x="264" y="22" class="t">/</text>
+<text x="276" y="22" class="t">b</text>
+<text x="288" y="22" class="t">u</text>
+<text x="300" y="22" class="t">i</text>
+<text x="312" y="22" class="t">l</text>
+<text x="324" y="22" class="t">d</text>
+<text x="336" y="22" class="t">s</text>
+<text x="348" y="22" class="t">/</text>
+<text x="360" y="22" class="t">C</text>
+<text x="372" y="22" class="t">P</text>
+<text x="384" y="22" class="t">Y</text>
+<text x="396" y="22" class="t">S</text>
+<text x="408" y="22" class="t">C</text>
+<text x="420" y="22" class="t">N</text>
+<text x="432" y="22" class="t">2</text>
+<text x="444" y="22" class="t">S</text>
+<text x="456" y="22" class="t">V</text>
+<text x="468" y="22" class="t">G</text>
+<text x="12" y="44" class="t">A</text>
+<text x="24" y="44" class="t">n</text>
+<text x="36" y="44" class="t">f</text>
+<text x="48" y="44" class="t">a</text>
+<text x="60" y="44" class="t">n</text>
+<text x="72" y="44" class="t">g</text>
+<text x="96" y="44" class="t">b</text>
+<text x="108" y="44" class="t">e</text>
+<text x="120" y="44" class="t">i</text>
+<text x="156" y="44" class="t">:</text>
+<line x1="179" y1="45" x2="191" y2="45" class="l_UL" />
+<line x1="191" y1="45" x2="203" y2="45" class="l_UL" />
+<line x1="203" y1="45" x2="215" y2="45" class="l_UL" />
+<line x1="215" y1="45" x2="227" y2="45" class="l_UL" />
+<line x1="227" y1="45" x2="239" y2="45" class="l_UL" />
+<line x1="239" y1="45" x2="251" y2="45" class="l_UL" />
+<line x1="251" y1="45" x2="263" y2="45" class="l_UL" />
+<line x1="263" y1="45" x2="275" y2="45" class="l_UL" />
+<line x1="275" y1="45" x2="287" y2="45" class="l_UL" />
+<line x1="287" y1="45" x2="299" y2="45" class="l_UL" />
+<text x="360" y="44" class="t">S</text>
+<text x="372" y="44" class="t">a</text>
+<text x="384" y="44" class="t">t</text>
+<text x="396" y="44" class="t">z</text>
+<text x="408" y="44" class="t">:</text>
+<line x1="467" y1="45" x2="479" y2="45" class="l_UL" />
+<line x1="479" y1="45" x2="491" y2="45" class="l_UL" />
+<line x1="491" y1="45" x2="503" y2="45" class="l_UL" />
+<line x1="503" y1="45" x2="515" y2="45" class="l_UL" />
+<line x1="515" y1="45" x2="527" y2="45" class="l_UL" />
+<line x1="527" y1="45" x2="539" y2="45" class="l_UL" />
+<text x="540" y="44" class="t UL">1</text>
+<line x1="539" y1="45" x2="551" y2="45" class="l_UL" />
+<text x="576" y="44" class="t">v</text>
+<text x="588" y="44" class="t">.</text>
+<text x="684" y="44" class="t">6</text>
+<text x="12" y="66" class="t">N</text>
+<text x="24" y="66" class="t">.</text>
+<text x="48" y="66" class="t">D</text>
+<text x="60" y="66" class="t">a</text>
+<text x="72" y="66" class="t">t</text>
+<text x="84" y="66" class="t">e</text>
+<text x="96" y="66" class="t">i</text>
+<text x="120" y="66" class="t">:</text>
+<line x1="143" y1="67" x2="155" y2="67" class="l_UL" />
+<line x1="155" y1="67" x2="167" y2="67" class="l_UL" />
+<line x1="167" y1="67" x2="179" y2="67" class="l_UL" />
+<line x1="179" y1="67" x2="191" y2="67" class="l_UL" />
+<line x1="191" y1="67" x2="203" y2="67" class="l_UL" />
+<line x1="203" y1="67" x2="215" y2="67" class="l_UL" />
+<line x1="215" y1="67" x2="227" y2="67" class="l_UL" />
+<line x1="227" y1="67" x2="239" y2="67" class="l_UL" />
+<line x1="239" y1="67" x2="251" y2="67" class="l_UL" />
+<line x1="251" y1="67" x2="263" y2="67" class="l_UL" />
+<line x1="263" y1="67" x2="275" y2="67" class="l_UL" />
+<line x1="275" y1="67" x2="287" y2="67" class="l_UL" />
+<line x1="287" y1="67" x2="299" y2="67" class="l_UL" />
+<line x1="299" y1="67" x2="311" y2="67" class="l_UL" />
+<line x1="311" y1="67" x2="323" y2="67" class="l_UL" />
+<line x1="323" y1="67" x2="335" y2="67" class="l_UL" />
+<line x1="335" y1="67" x2="347" y2="67" class="l_UL" />
+<line x1="347" y1="67" x2="359" y2="67" class="l_UL" />
+<line x1="359" y1="67" x2="371" y2="67" class="l_UL" />
+<line x1="371" y1="67" x2="383" y2="67" class="l_UL" />
+<line x1="383" y1="67" x2="395" y2="67" class="l_UL" />
+<line x1="395" y1="67" x2="407" y2="67" class="l_UL" />
+<line x1="407" y1="67" x2="419" y2="67" class="l_UL" />
+<line x1="419" y1="67" x2="431" y2="67" class="l_UL" />
+<line x1="431" y1="67" x2="443" y2="67" class="l_UL" />
+<line x1="443" y1="67" x2="455" y2="67" class="l_UL" />
+<line x1="455" y1="67" x2="467" y2="67" class="l_UL" />
+<line x1="467" y1="67" x2="479" y2="67" class="l_UL" />
+<line x1="479" y1="67" x2="491" y2="67" class="l_UL" />
+<line x1="491" y1="67" x2="503" y2="67" class="l_UL" />
+<line x1="503" y1="67" x2="515" y2="67" class="l_UL" />
+<line x1="515" y1="67" x2="527" y2="67" class="l_UL" />
+<line x1="527" y1="67" x2="539" y2="67" class="l_UL" />
+<line x1="539" y1="67" x2="551" y2="67" class="l_UL" />
+<line x1="551" y1="67" x2="563" y2="67" class="l_UL" />
+<line x1="563" y1="67" x2="575" y2="67" class="l_UL" />
+<line x1="575" y1="67" x2="587" y2="67" class="l_UL" />
+<line x1="587" y1="67" x2="599" y2="67" class="l_UL" />
+<line x1="599" y1="67" x2="611" y2="67" class="l_UL" />
+<line x1="611" y1="67" x2="623" y2="67" class="l_UL" />
+<line x1="623" y1="67" x2="635" y2="67" class="l_UL" />
+<line x1="635" y1="67" x2="647" y2="67" class="l_UL" />
+<line x1="647" y1="67" x2="659" y2="67" class="l_UL" />
+<line x1="659" y1="67" x2="671" y2="67" class="l_UL" />
+<line x1="671" y1="67" x2="683" y2="67" class="l_UL" />
+<line x1="683" y1="67" x2="695" y2="67" class="l_UL" />
+<line x1="695" y1="67" x2="707" y2="67" class="l_UL" />
+<line x1="707" y1="67" x2="719" y2="67" class="l_UL" />
+<line x1="719" y1="67" x2="731" y2="67" class="l_UL" />
+<line x1="731" y1="67" x2="743" y2="67" class="l_UL" />
+<line x1="743" y1="67" x2="755" y2="67" class="l_UL" />
+<line x1="755" y1="67" x2="767" y2="67" class="l_UL" />
+<line x1="767" y1="67" x2="779" y2="67" class="l_UL" />
+<line x1="779" y1="67" x2="791" y2="67" class="l_UL" />
+<line x1="791" y1="67" x2="803" y2="67" class="l_UL" />
+<line x1="803" y1="67" x2="815" y2="67" class="l_UL" />
+<line x1="815" y1="67" x2="827" y2="67" class="l_UL" />
+<line x1="827" y1="67" x2="839" y2="67" class="l_UL" />
+<line x1="839" y1="67" x2="851" y2="67" class="l_UL" />
+<line x1="851" y1="67" x2="863" y2="67" class="l_UL" />
+<line x1="863" y1="67" x2="875" y2="67" class="l_UL" />
+<line x1="875" y1="67" x2="887" y2="67" class="l_UL" />
+<line x1="887" y1="67" x2="899" y2="67" class="l_UL" />
+<line x1="899" y1="67" x2="911" y2="67" class="l_UL" />
+<line x1="911" y1="67" x2="923" y2="67" class="l_UL" />
+<line x1="923" y1="67" x2="935" y2="67" class="l_UL" />
+<line x1="935" y1="67" x2="947" y2="67" class="l_UL" />
+<line x1="947" y1="67" x2="959" y2="67" class="l_UL" />
+<line x1="959" y1="67" x2="971" y2="67" class="l_UL" />
+<line x1="971" y1="67" x2="983" y2="67" class="l_UL" />
+<line x1="983" y1="67" x2="995" y2="67" class="l_UL" />
+<line x1="995" y1="67" x2="1007" y2="67" class="l_UL" />
+<line x1="1007" y1="67" x2="1019" y2="67" class="l_UL" />
+<line x1="1019" y1="67" x2="1031" y2="67" class="l_UL" />
+<line x1="1031" y1="67" x2="1043" y2="67" class="l_UL" />
+<line x1="1043" y1="67" x2="1055" y2="67" class="l_UL" />
+<line x1="1055" y1="67" x2="1067" y2="67" class="l_UL" />
+<line x1="1067" y1="67" x2="1079" y2="67" class="l_UL" />
+<line x1="1079" y1="67" x2="1091" y2="67" class="l_UL" />
+<line x1="1091" y1="67" x2="1103" y2="67" class="l_UL" />
+<line x1="1103" y1="67" x2="1115" y2="67" class="l_UL" />
+<line x1="1115" y1="67" x2="1127" y2="67" class="l_UL" />
+<line x1="1127" y1="67" x2="1139" y2="67" class="l_UL" />
+<line x1="1139" y1="67" x2="1151" y2="67" class="l_UL" />
+<line x1="1151" y1="67" x2="1163" y2="67" class="l_UL" />
+<line x1="1163" y1="67" x2="1175" y2="67" class="l_UL" />
+<line x1="1175" y1="67" x2="1187" y2="67" class="l_UL" />
+<line x1="1187" y1="67" x2="1199" y2="67" class="l_UL" />
+<line x1="1199" y1="67" x2="1211" y2="67" class="l_UL" />
+<line x1="1211" y1="67" x2="1223" y2="67" class="l_UL" />
+<line x1="1223" y1="67" x2="1235" y2="67" class="l_UL" />
+<line x1="1235" y1="67" x2="1247" y2="67" class="l_UL" />
+<line x1="1247" y1="67" x2="1259" y2="67" class="l_UL" />
+<line x1="1259" y1="67" x2="1271" y2="67" class="l_UL" />
+<line x1="1271" y1="67" x2="1283" y2="67" class="l_UL" />
+<line x1="1283" y1="67" x2="1295" y2="67" class="l_UL" />
+<line x1="1295" y1="67" x2="1307" y2="67" class="l_UL" />
+<line x1="1307" y1="67" x2="1319" y2="67" class="l_UL" />
+<line x1="1319" y1="67" x2="1331" y2="67" class="l_UL" />
+<line x1="1331" y1="67" x2="1343" y2="67" class="l_UL" />
+<text x="12" y="88" class="t">2</text>
+<text x="24" y="88" class="t">=</text>
+<text x="36" y="88" class="t">B</text>
+<text x="48" y="88" class="t">e</text>
+<text x="60" y="88" class="t">a</text>
+<text x="72" y="88" class="t">r</text>
+<text x="84" y="88" class="t">b</text>
+<text x="96" y="88" class="t">.</text>
+<text x="120" y="88" class="t">4</text>
+<text x="132" y="88" class="t">=</text>
+<text x="144" y="88" class="t">D</text>
+<text x="156" y="88" class="t">a</text>
+<text x="168" y="88" class="t">t</text>
+<text x="180" y="88" class="t">.</text>
+<text x="204" y="88" class="t">l</text>
+<text x="216" y="88" class="t">ö</text>
+<text x="228" y="88" class="t">s</text>
+<text x="240" y="88" class="t">c</text>
+<text x="252" y="88" class="t">h</text>
+<text x="264" y="88" class="t">.</text>
+<text x="300" y="88" class="t">5</text>
+<text x="312" y="88" class="t">=</text>
+<text x="324" y="88" class="t">A</text>
+<text x="336" y="88" class="t">n</text>
+<text x="348" y="88" class="t">z</text>
+<text x="360" y="88" class="t">e</text>
+<text x="372" y="88" class="t">i</text>
+<text x="384" y="88" class="t">g</text>
+<text x="396" y="88" class="t">e</text>
+<text x="408" y="88" class="t">n</text>
+<text x="444" y="88" class="t">6</text>
+<text x="456" y="88" class="t">=</text>
+<text x="468" y="88" class="t">P</text>
+<text x="480" y="88" class="t">f</text>
+<text x="492" y="88" class="t">a</text>
+<text x="504" y="88" class="t">d</text>
+<text x="516" y="88" class="t">g</text>
+<text x="528" y="88" class="t">r</text>
+<text x="540" y="88" class="t">ö</text>
+<text x="552" y="88" class="t">ß</text>
+<text x="564" y="88" class="t">e</text>
+<text x="600" y="88" class="t">9</text>
+<text x="612" y="88" class="t">=</text>
+<text x="624" y="88" class="t">R</text>
+<text x="636" y="88" class="t">e</text>
+<text x="648" y="88" class="t">k</text>
+<text x="660" y="88" class="t">u</text>
+<text x="672" y="88" class="t">r</text>
+<text x="684" y="88" class="t">s</text>
+<text x="696" y="88" class="t">i</text>
+<text x="708" y="88" class="t">v</text>
+<text x="720" y="88" class="t">e</text>
+<text x="732" y="88" class="t">s</text>
+<text x="756" y="88" class="t">L</text>
+<text x="768" y="88" class="t">ö</text>
+<text x="780" y="88" class="t">s</text>
+<text x="792" y="88" class="t">c</text>
+<text x="804" y="88" class="t">h</text>
+<text x="816" y="88" class="t">e</text>
+<text x="828" y="88" class="t">n</text>
+<text x="0" y="132" class="t HI">O</text>
+<text x="12" y="132" class="t HI">p</text>
+<text x="24" y="132" class="t HI">t</text>
+<text x="48" y="132" class="t HI">N</text>
+<text x="60" y="132" class="t HI">a</text>
+<text x="72" y="132" class="t HI">m</text>
+<text x="84" y="132" class="t HI">e</text>
+<text x="300" y="132" class="t HI">G</text>
+<text x="312" y="132" class="t HI">r</text>
+<text x="324" y="132" class="t HI">ö</text>
+<text x="336" y="132" class="t HI">ß</text>
+<text x="348" y="132" class="t HI">e</text>
+<text x="432" y="132" class="t HI">E</text>
+<text x="444" y="132" class="t HI">i</text>
+<text x="456" y="132" class="t HI">g</text>
+<text x="468" y="132" class="t HI">n</text>
+<text x="480" y="132" class="t HI">e</text>
+<text x="492" y="132" class="t HI">r</text>
+<text x="588" y="132" class="t HI">G</text>
+<text x="600" y="132" class="t HI">e</text>
+<text x="612" y="132" class="t HI">ä</text>
+<text x="624" y="132" class="t HI">n</text>
+<text x="636" y="132" class="t HI">d</text>
+<text x="648" y="132" class="t HI">e</text>
+<text x="660" y="132" class="t HI">r</text>
+<text x="672" y="132" class="t HI">t</text>
+<text x="780" y="132" class="t HI">B</text>
+<text x="792" y="132" class="t HI">e</text>
+<text x="804" y="132" class="t HI">n</text>
+<text x="816" y="132" class="t HI">u</text>
+<text x="828" y="132" class="t HI">t</text>
+<text x="840" y="132" class="t HI">z</text>
+<text x="852" y="132" class="t HI">t</text>
+<text x="972" y="132" class="t HI">C</text>
+<text x="984" y="132" class="t HI">C</text>
+<text x="996" y="132" class="t HI">S</text>
+<text x="1008" y="132" class="t HI">I</text>
+<text x="1020" y="132" class="t HI">D</text>
+<text x="1044" y="132" class="t HI">o</text>
+<text x="1056" y="132" class="t HI">d</text>
+<text x="1068" y="132" class="t HI">e</text>
+<text x="1080" y="132" class="t HI">r</text>
+<text x="1104" y="132" class="t HI">s</text>
+<text x="1116" y="132" class="t HI">y</text>
+<text x="1128" y="132" class="t HI">m</text>
+<text x="1140" y="132" class="t HI">b</text>
+<text x="1152" y="132" class="t HI">o</text>
+<text x="1164" y="132" class="t HI">l</text>
+<text x="1176" y="132" class="t HI">i</text>
+<text x="1188" y="132" class="t HI">s</text>
+<text x="1200" y="132" class="t HI">c</text>
+<text x="1212" y="132" class="t HI">h</text>
+<text x="1224" y="132" class="t HI">e</text>
+<text x="1248" y="132" class="t HI">V</text>
+<text x="1260" y="132" class="t HI">e</text>
+<text x="1272" y="132" class="t HI">r</text>
+<text x="1284" y="132" class="t HI">b</text>
+<text x="1296" y="132" class="t HI">i</text>
+<text x="1308" y="132" class="t HI">n</text>
+<text x="1320" y="132" class="t HI">d</text>
+<text x="1332" y="132" class="t HI">u</text>
+<text x="1344" y="132" class="t HI">n</text>
+<text x="1356" y="132" class="t HI">g</text>
+<line x1="11" y1="155" x2="23" y2="155" class="l_UL" />
+<text x="48" y="154" class="t">R</text>
+<text x="60" y="154" class="t">E</text>
+<text x="72" y="154" class="t">A</text>
+<text x="84" y="154" class="t">D</text>
+<text x="96" y="154" class="t">M</text>
+<text x="108" y="154" class="t">E</text>
+<text x="120" y="154" class="t">.</text>
+<text x="132" y="154" class="t">m</text>
+<text x="144" y="154" class="t">d</text>
+<text x="384" y="154" class="t">8</text>
+<text x="396" y="154" class="t">K</text>
+<text x="432" y="154" class="t">A</text>
+<text x="444" y="154" class="t">N</text>
+<text x="456" y="154" class="t">G</text>
+<text x="468" y="154" class="t">O</text>
+<text x="588" y="154" class="t">2</text>
+<text x="600" y="154" class="t">5</text>
+<text x="612" y="154" class="t">-</text>
+<text x="624" y="154" class="t">1</text>
+<text x="636" y="154" class="t">2</text>
+<text x="648" y="154" class="t">-</text>
+<text x="660" y="154" class="t">2</text>
+<text x="672" y="154" class="t">7</text>
+<text x="696" y="154" class="t">0</text>
+<text x="708" y="154" class="t">8</text>
+<text x="720" y="154" class="t">:</text>
+<text x="732" y="154" class="t">1</text>
+<text x="744" y="154" class="t">3</text>
+<text x="780" y="154" class="t">2</text>
+<text x="792" y="154" class="t">5</text>
+<text x="804" y="154" class="t">-</text>
+<text x="816" y="154" class="t">1</text>
+<text x="828" y="154" class="t">2</text>
+<text x="840" y="154" class="t">-</text>
+<text x="852" y="154" class="t">2</text>
+<text x="864" y="154" class="t">7</text>
+<text x="888" y="154" class="t">0</text>
+<text x="900" y="154" class="t">8</text>
+<text x="912" y="154" class="t">:</text>
+<text x="924" y="154" class="t">5</text>
+<text x="936" y="154" class="t">9</text>
+<text x="1008" y="154" class="t">C</text>
+<text x="1020" y="154" class="t">C</text>
+<text x="1032" y="154" class="t">S</text>
+<text x="1044" y="154" class="t">I</text>
+<text x="1056" y="154" class="t">D</text>
+<text x="1080" y="154" class="t">=</text>
+<text x="1116" y="154" class="t">1</text>
+<text x="1128" y="154" class="t">2</text>
+<text x="1140" y="154" class="t">0</text>
+<text x="1152" y="154" class="t">8</text>
+<line x1="11" y1="177" x2="23" y2="177" class="l_UL" />
+<text x="48" y="176" class="t">L</text>
+<text x="60" y="176" class="t">I</text>
+<text x="72" y="176" class="t">C</text>
+<text x="84" y="176" class="t">E</text>
+<text x="96" y="176" class="t">N</text>
+<text x="108" y="176" class="t">S</text>
+<text x="120" y="176" class="t">E</text>
+<text x="372" y="176" class="t">6</text>
+<text x="384" y="176" class="t">4</text>
+<text x="396" y="176" class="t">K</text>
+<text x="432" y="176" class="t">A</text>
+<text x="444" y="176" class="t">N</text>
+<text x="456" y="176" class="t">G</text>
+<text x="468" y="176" class="t">O</text>
+<text x="588" y="176" class="t">2</text>
+<text x="600" y="176" class="t">5</text>
+<text x="612" y="176" class="t">-</text>
+<text x="624" y="176" class="t">1</text>
+<text x="636" y="176" class="t">2</text>
+<text x="648" y="176" class="t">-</text>
+<text x="660" y="176" class="t">1</text>
+<text x="672" y="176" class="t">6</text>
+<text x="696" y="176" class="t">0</text>
+<text x="708" y="176" class="t">7</text>
+<text x="720" y="176" class="t">:</text>
+<text x="732" y="176" class="t">1</text>
+<text x="744" y="176" class="t">2</text>
+<text x="780" y="176" class="t">2</text>
+<text x="792" y="176" class="t">5</text>
+<text x="804" y="176" class="t">-</text>
+<text x="816" y="176" class="t">1</text>
+<text x="828" y="176" class="t">2</text>
+<text x="840" y="176" class="t">-</text>
+<text x="852" y="176" class="t">2</text>
+<text x="864" y="176" class="t">7</text>
+<text x="888" y="176" class="t">0</text>
+<text x="900" y="176" class="t">8</text>
+<text x="912" y="176" class="t">:</text>
+<text x="924" y="176" class="t">5</text>
+<text x="936" y="176" class="t">9</text>
+<text x="1008" y="176" class="t">C</text>
+<text x="1020" y="176" class="t">C</text>
+<text x="1032" y="176" class="t">S</text>
+<text x="1044" y="176" class="t">I</text>
+<text x="1056" y="176" class="t">D</text>
+<text x="1080" y="176" class="t">=</text>
+<text x="1116" y="176" class="t">1</text>
+<text x="1128" y="176" class="t">2</text>
+<text x="1140" y="176" class="t">0</text>
+<text x="1152" y="176" class="t">8</text>
+<line x1="11" y1="199" x2="23" y2="199" class="l_UL" />
+<text x="48" y="198" class="t">m</text>
+<text x="60" y="198" class="t">a</text>
+<text x="72" y="198" class="t">k</text>
+<text x="84" y="198" class="t">e</text>
+<text x="96" y="198" class="t">f</text>
+<text x="108" y="198" class="t">i</text>
+<text x="120" y="198" class="t">l</text>
+<text x="132" y="198" class="t">e</text>
+<text x="384" y="198" class="t">8</text>
+<text x="396" y="198" class="t">K</text>
+<text x="432" y="198" class="t">A</text>
+<text x="444" y="198" class="t">N</text>
+<text x="456" y="198" class="t">G</text>
+<text x="468" y="198" class="t">O</text>
+<text x="588" y="198" class="t">2</text>
+<text x="600" y="198" class="t">5</text>
+<text x="612" y="198" class="t">-</text>
+<text x="624" y="198" class="t">1</text>
+<text x="636" y="198" class="t">2</text>
+<text x="648" y="198" class="t">-</text>
+<text x="660" y="198" class="t">2</text>
+<text x="672" y="198" class="t">7</text>
+<text x="696" y="198" class="t">0</text>
+<text x="708" y="198" class="t">8</text>
+<text x="720" y="198" class="t">:</text>
+<text x="732" y="198" class="t">2</text>
+<text x="744" y="198" class="t">3</text>
+<text x="780" y="198" class="t">2</text>
+<text x="792" y="198" class="t">5</text>
+<text x="804" y="198" class="t">-</text>
+<text x="816" y="198" class="t">1</text>
+<text x="828" y="198" class="t">2</text>
+<text x="840" y="198" class="t">-</text>
+<text x="852" y="198" class="t">2</text>
+<text x="864" y="198" class="t">7</text>
+<text x="888" y="198" class="t">0</text>
+<text x="900" y="198" class="t">8</text>
+<text x="912" y="198" class="t">:</text>
+<text x="924" y="198" class="t">5</text>
+<text x="936" y="198" class="t">9</text>
+<text x="1008" y="198" class="t">C</text>
+<text x="1020" y="198" class="t">C</text>
+<text x="1032" y="198" class="t">S</text>
+<text x="1044" y="198" class="t">I</text>
+<text x="1056" y="198" class="t">D</text>
+<text x="1080" y="198" class="t">=</text>
+<text x="1116" y="198" class="t">1</text>
+<text x="1128" y="198" class="t">2</text>
+<text x="1140" y="198" class="t">0</text>
+<text x="1152" y="198" class="t">8</text>
+<line x1="11" y1="221" x2="23" y2="221" class="l_UL" />
+<text x="48" y="220" class="t">Q</text>
+<text x="60" y="220" class="t">R</text>
+<text x="72" y="220" class="t">P</text>
+<text x="84" y="220" class="t">G</text>
+<text x="96" y="220" class="t">L</text>
+<text x="108" y="220" class="t">E</text>
+<text x="120" y="220" class="t">S</text>
+<text x="132" y="220" class="t">R</text>
+<text x="144" y="220" class="t">C</text>
+<text x="300" y="220" class="t">*</text>
+<text x="312" y="220" class="t">D</text>
+<text x="324" y="220" class="t">I</text>
+<text x="336" y="220" class="t">R</text>
+<text x="432" y="220" class="t">A</text>
+<text x="444" y="220" class="t">N</text>
+<text x="456" y="220" class="t">G</text>
+<text x="468" y="220" class="t">O</text>
+<text x="588" y="220" class="t">2</text>
+<text x="600" y="220" class="t">5</text>
+<text x="612" y="220" class="t">-</text>
+<text x="624" y="220" class="t">1</text>
+<text x="636" y="220" class="t">2</text>
+<text x="648" y="220" class="t">-</text>
+<text x="660" y="220" class="t">2</text>
+<text x="672" y="220" class="t">7</text>
+<text x="696" y="220" class="t">0</text>
+<text x="708" y="220" class="t">8</text>
+<text x="720" y="220" class="t">:</text>
+<text x="732" y="220" class="t">5</text>
+<text x="744" y="220" class="t">9</text>
+<text x="780" y="220" class="t">2</text>
+<text x="792" y="220" class="t">5</text>
+<text x="804" y="220" class="t">-</text>
+<text x="816" y="220" class="t">1</text>
+<text x="828" y="220" class="t">2</text>
+<text x="840" y="220" class="t">-</text>
+<text x="852" y="220" class="t">2</text>
+<text x="864" y="220" class="t">7</text>
+<text x="888" y="220" class="t">0</text>
+<text x="900" y="220" class="t">8</text>
+<text x="912" y="220" class="t">:</text>
+<text x="924" y="220" class="t">5</text>
+<text x="936" y="220" class="t">9</text>
+<text x="12" y="242" class="t UL">5</text>
+<line x1="11" y1="243" x2="23" y2="243" class="l_UL" />
+<text x="48" y="242" class="t">Q</text>
+<text x="60" y="242" class="t">S</text>
+<text x="72" y="242" class="t">Y</text>
+<text x="84" y="242" class="t">S</text>
+<text x="96" y="242" class="t">C</text>
+<text x="108" y="242" class="t">P</text>
+<text x="120" y="242" class="t">Y</text>
+<text x="300" y="242" class="t">*</text>
+<text x="312" y="242" class="t">D</text>
+<text x="324" y="242" class="t">I</text>
+<text x="336" y="242" class="t">R</text>
+<text x="432" y="242" class="t">A</text>
+<text x="444" y="242" class="t">N</text>
+<text x="456" y="242" class="t">G</text>
+<text x="468" y="242" class="t">O</text>
+<text x="588" y="242" class="t">2</text>
+<text x="600" y="242" class="t">5</text>
+<text x="612" y="242" class="t">-</text>
+<text x="624" y="242" class="t">1</text>
+<text x="636" y="242" class="t">2</text>
+<text x="648" y="242" class="t">-</text>
+<text x="660" y="242" class="t">2</text>
+<text x="672" y="242" class="t">7</text>
+<text x="696" y="242" class="t">0</text>
+<text x="708" y="242" class="t">8</text>
+<text x="720" y="242" class="t">:</text>
+<text x="732" y="242" class="t">1</text>
+<text x="744" y="242" class="t">4</text>
+<text x="780" y="242" class="t">2</text>
+<text x="792" y="242" class="t">5</text>
+<text x="804" y="242" class="t">-</text>
+<text x="816" y="242" class="t">1</text>
+<text x="828" y="242" class="t">2</text>
+<text x="840" y="242" class="t">-</text>
+<text x="852" y="242" class="t">2</text>
+<text x="864" y="242" class="t">7</text>
+<text x="888" y="242" class="t">0</text>
+<text x="900" y="242" class="t">8</text>
+<text x="912" y="242" class="t">:</text>
+<text x="924" y="242" class="t">5</text>
+<text x="936" y="242" class="t">9</text>
+<line x1="11" y1="265" x2="23" y2="265" class="l_UL" />
+<text x="48" y="264" class="t">Q</text>
+<text x="60" y="264" class="t">C</text>
+<text x="72" y="264" class="t">M</text>
+<text x="84" y="264" class="t">D</text>
+<text x="96" y="264" class="t">S</text>
+<text x="108" y="264" class="t">R</text>
+<text x="120" y="264" class="t">C</text>
+<text x="300" y="264" class="t">*</text>
+<text x="312" y="264" class="t">D</text>
+<text x="324" y="264" class="t">I</text>
+<text x="336" y="264" class="t">R</text>
+<text x="432" y="264" class="t">A</text>
+<text x="444" y="264" class="t">N</text>
+<text x="456" y="264" class="t">G</text>
+<text x="468" y="264" class="t">O</text>
+<text x="588" y="264" class="t">2</text>
+<text x="600" y="264" class="t">5</text>
+<text x="612" y="264" class="t">-</text>
+<text x="624" y="264" class="t">1</text>
+<text x="636" y="264" class="t">2</text>
+<text x="648" y="264" class="t">-</text>
+<text x="660" y="264" class="t">2</text>
+<text x="672" y="264" class="t">6</text>
+<text x="696" y="264" class="t">0</text>
+<text x="708" y="264" class="t">9</text>
+<text x="720" y="264" class="t">:</text>
+<text x="732" y="264" class="t">4</text>
+<text x="744" y="264" class="t">6</text>
+<text x="780" y="264" class="t">2</text>
+<text x="792" y="264" class="t">5</text>
+<text x="804" y="264" class="t">-</text>
+<text x="816" y="264" class="t">1</text>
+<text x="828" y="264" class="t">2</text>
+<text x="840" y="264" class="t">-</text>
+<text x="852" y="264" class="t">2</text>
+<text x="864" y="264" class="t">7</text>
+<text x="888" y="264" class="t">0</text>
+<text x="900" y="264" class="t">8</text>
+<text x="912" y="264" class="t">:</text>
+<text x="924" y="264" class="t">5</text>
+<text x="936" y="264" class="t">9</text>
+<text x="1368" y="528" class="t HI">E</text>
+<text x="1380" y="528" class="t HI">n</text>
+<text x="1392" y="528" class="t HI">d</text>
+<text x="1404" y="528" class="t HI">e</text>
+<text x="12" y="572" class="t HI BL CS">F</text>
+<text x="24" y="572" class="t HI BL CS">3</text>
+<text x="36" y="572" class="t HI BL CS">=</text>
+<text x="48" y="572" class="t HI BL CS">V</text>
+<text x="60" y="572" class="t HI BL CS">e</text>
+<text x="72" y="572" class="t HI BL CS">r</text>
+<text x="84" y="572" class="t HI BL CS">l</text>
+<text x="96" y="572" class="t HI BL CS">.</text>
+<text x="144" y="572" class="t HI BL CS">F</text>
+<text x="156" y="572" class="t HI BL CS">5</text>
+<text x="168" y="572" class="t HI BL CS">=</text>
+<text x="180" y="572" class="t HI BL CS">A</text>
+<text x="192" y="572" class="t HI BL CS">k</text>
+<text x="204" y="572" class="t HI BL CS">t</text>
+<text x="216" y="572" class="t HI BL CS">u</text>
+<text x="228" y="572" class="t HI BL CS">a</text>
+<text x="240" y="572" class="t HI BL CS">l</text>
+<text x="252" y="572" class="t HI BL CS">.</text>
+<text x="300" y="572" class="t HI BL CS">F</text>
+<text x="312" y="572" class="t HI BL CS">1</text>
+<text x="324" y="572" class="t HI BL CS">2</text>
+<text x="336" y="572" class="t HI BL CS">=</text>
+<text x="348" y="572" class="t HI BL CS">A</text>
+<text x="360" y="572" class="t HI BL CS">b</text>
+<text x="372" y="572" class="t HI BL CS">b</text>
+<text x="384" y="572" class="t HI BL CS">r</text>
+<text x="396" y="572" class="t HI BL CS">.</text>
+<text x="444" y="572" class="t HI BL CS">F</text>
+<text x="456" y="572" class="t HI BL CS">1</text>
+<text x="468" y="572" class="t HI BL CS">6</text>
+<text x="480" y="572" class="t HI BL CS">-</text>
+<text x="492" y="572" class="t HI BL CS">S</text>
+<text x="504" y="572" class="t HI BL CS">o</text>
+<text x="516" y="572" class="t HI BL CS">r</text>
+<text x="528" y="572" class="t HI BL CS">t</text>
+<text x="540" y="572" class="t HI BL CS">i</text>
+<text x="552" y="572" class="t HI BL CS">e</text>
+<text x="564" y="572" class="t HI BL CS">r</text>
+<text x="576" y="572" class="t HI BL CS">e</text>
+<text x="588" y="572" class="t HI BL CS">n</text>
+<text x="636" y="572" class="t HI BL CS">F</text>
+<text x="648" y="572" class="t HI BL CS">1</text>
+<text x="660" y="572" class="t HI BL CS">7</text>
+<text x="672" y="572" class="t HI BL CS">=</text>
+<text x="684" y="572" class="t HI BL CS">A</text>
+<text x="696" y="572" class="t HI BL CS">n</text>
+<text x="708" y="572" class="t HI BL CS">f</text>
+<text x="720" y="572" class="t HI BL CS">a</text>
+<text x="732" y="572" class="t HI BL CS">n</text>
+<text x="744" y="572" class="t HI BL CS">g</text>
+<text x="768" y="572" class="t HI BL CS">b</text>
+<text x="780" y="572" class="t HI BL CS">e</text>
+<text x="792" y="572" class="t HI BL CS">i</text>
+<text x="840" y="572" class="t HI BL CS">F</text>
+<text x="852" y="572" class="t HI BL CS">2</text>
+<text x="864" y="572" class="t HI BL CS">2</text>
+<text x="876" y="572" class="t HI BL CS">=</text>
+<text x="888" y="572" class="t HI BL CS">G</text>
+<text x="900" y="572" class="t HI BL CS">e</text>
+<text x="912" y="572" class="t HI BL CS">s</text>
+<text x="924" y="572" class="t HI BL CS">.</text>
+<text x="948" y="572" class="t HI BL CS">F</text>
+<text x="960" y="572" class="t HI BL CS">e</text>
+<text x="972" y="572" class="t HI BL CS">l</text>
+<text x="984" y="572" class="t HI BL CS">d</text>
+<text x="1008" y="572" class="t HI BL CS">a</text>
+<text x="1020" y="572" class="t HI BL CS">n</text>
+<text x="1032" y="572" class="t HI BL CS">z</text>
+<text x="1044" y="572" class="t HI BL CS">.</text>
+</svg>
