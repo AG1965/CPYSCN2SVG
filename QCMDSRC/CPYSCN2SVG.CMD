@@ -31,12 +31,12 @@
                           RSTD(*YES) VALUES(*NONE *HTML *MD) +
                           PROMPT('HTML / Markdown output')
 
-             PARM       KWD(CSS) TYPE(*CHAR) LEN(128) +
+             PARM       KWD(CSS) TYPE(*PNAME) CASE(*MIXED) LEN(128) +
                           DFT(*INLINE) +
                           SPCVAL((*INLINE) (*NONE)) +
                           PROMPT('Create CSS inline / external')
 
-             PARM       KWD(CSSEXT) TYPE(*PNAME) LEN(128) MAX(5) +
+             PARM       KWD(CSSEXT) TYPE(*PNAME) CASE(*MIXED) LEN(128) MAX(5) +
                           DFT(*NONE) SPCVAL((*NONE)) +
                           PROMPT('URLs for external CSS-files')
 

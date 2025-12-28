@@ -133,26 +133,19 @@ Dcl-Proc MAIN;
                         '.md';
 
 
-   // .txt-green   { fill: #006400; }
-   // .txt-white   { fill: #000000; }
-   // .txt-blue    { fill: #003399; }
-   // .txt-turq    { fill: #008b8b; }
-   // .txt-red     { fill: #b00020; }
-   // .txt-pink    { fill: #a000a0; }
-   // .txt-yellow  { fill: #9a8700; }
-
    g_CSS_string =
+   ' :root { color-scheme: light dark; }' + #CRLF +
    ' .t {  font-family: IBM3270, Consolas, monospace;' + #CRLF +
    '       font-size: ' + %CHAR(g_charSize) + 'px;' + #CRLF +
-   '       fill: #006400;' + #CRLF +
+   '       fill: light-dark( #006400, #00ff00);' + #CRLF +
    '       text-align: center; }' + #CRLF +
-   ' .HI { font-weight: bold; fill: #000000; }' + #CRLF +
-   ' .BL { fill: #b00020; }' + #CRLF +
-   ' .CS { fill: #008b8b; }' + #CRLF +
-   ' .BL.CS { fill: #a000a0; }' + #CRLF +
-   ' .HI.BL.CS { fill: #003399; }' + #CRLF +
+   ' .HI { font-weight: bold; fill: light-dark( #000000, #f0f0f0); }' + #CRLF +
+   ' .BL { fill: light-dark( #b00020, #ff0000); }' + #CRLF +
+   ' .CS { fill: light-dark( #008b8b, #00ffff); }' + #CRLF +
+   ' .BL.CS { fill: light-dark( #a000a0, #ff1aff); }' + #CRLF +
+   ' .HI.BL.CS { fill: light-dark( #003399, #7890f0); }' + #CRLF +
    ' .l_UL { stroke: currentColor; stroke-width: 1px; }' + #CRLF +
-   ' .l_CS { stroke: #008b8b; stroke-width: 1px; stroke-opacity: 0.5; }' + #CRLF;
+   ' .l_CS { stroke: light-dark( #008b8b, #00ffff); stroke-width: 1px; stroke-opacity: 0.5; }' + #CRLF;
 
    // name of the css to be created in IFS
    #IFS_CSS_FileName = PI_CSS;
@@ -184,12 +177,14 @@ Dcl-Proc MAIN;
          '    <meta name="viewport" content="width=device-width, initial-scale=1.0">' + #CRLF +
          '    <title>CPYSCN2SVG</title>' + #CRLF +
          '    <style type="text/css">' + #CRLF +
+         '        :root { color-scheme: light dark; }' + #CRLF +
          '        html, body { font-family: Arial, Verdana, sans-serif; }' + #CRLF +
-         '        img { display: block; width: 80%; margin-bottom: 10px; border:1px solid black; }' + #CRLF +
+         '        img { display: block; width: 80%; margin-bottom: 10px; border:3px groove grey; }' + #CRLF +
          '        code { display: block;' + #CRLF +
          '               font-family: Consolas, monospace; ' + #CRLF +
          '               border:1px solid grey;' + #CRLF +
          '               background-color: #f0f0f0;' + #CRLF + 
+         '               color: #404040;' + #CRLF + 
          '               padding: 12px; }' + #CRLF +
          '    </style>' + #CRLF +
          '</head>' + #CRLF +

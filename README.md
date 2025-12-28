@@ -78,10 +78,19 @@ DSPF (27 lines x 132 characters)
 
 Download the repo to your IBM i, e.g. to /OSS/CPYSCN2SVG.
 
-In a bash shell, run "make" to compile the source code. You can and should override the OBJLIB to create the command and the program in a library of your choice.
+In a bash shell, make this directory your current directory and run "make" to compile the source code. You can and should override the OBJLIB to create the command and the program in a library of your choice.
 
 ```bash
+cd /OSS/CPYSCN2SVG
 make OBJLIB=MYLIB
+```
+
+If you don't have bash and gnu make installed, your can run the compile commands manually:
+
+```cl
+CRTCMD CMD(MYLIB/CPYSCN2SVG) PGM(MYLIB/CPYSCN2SVG) SRCSTMF('QCMDSRC/CPYSCN2SVG.CMD') PRDLIB(MYLIB)
+
+CRTSQLRPGI OBJ(MYLIB/CPYSCN2SVG) SRCSTMF('QRPGLESRC/CPYSCN2SVG.SQLRPGLE') INCDIR('./') RPGPPOPT(*LVL2) COMPILEOPT('TGTCCSID(*JOB)') DBGVIEW(*LIST)
 ```
 
 ## how to use
@@ -118,3 +127,27 @@ CPYSCN2SVG FILE(MYLIB/MYSCNCPY)
 ```
 
 This will create svg files in the IFS directory "myscncpy" (will be created, if it doesn't exist) with names like screen-001.svg, screen-002.svg, ...
+
+### File name parameters
+
+You can choose to include the creation date and time, that is stored in the database file by STRCPYSCN, in the file names.
+You can also include a counter in the file names.
+
+### HTML
+
+OUTPUT(*HTML) will create a html file with embedding <img> tags for all created svg files.
+
+It contains also a simple css style to display the svg files with a border.
+
+### Markdown
+
+OUTPUT(*MD) will create a markdown file with embedding &excl;&#91;&#93;() tags for all created svg files. (Like in this README.md above.)
+
+### CSS
+
+By default, all style information is included in the svg files (*INLINE).
+This is the recommended setting for most use cases, as the embedded css will be respected everywhere.
+
+You can choose to create a separate css file by specifying it's path/name and have the svg files refer to this file. But bear in mind, that this will work only when you display the svg file on it's own; if you embed it in an html or markdown file, the css file won't be loaded!
+
+You can also include up to 5 additional css files in the svg files.
