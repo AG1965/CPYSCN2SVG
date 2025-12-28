@@ -68,12 +68,53 @@ The mapping is done in CSS; so you could use the same svg files in dark mode on 
 
 ## Samples
 
+MAIN menu of <https://pub400.com> (24 lines x 80 characters)
 ![cpyscn01-002.svg](samples/cpyscn01-002.svg)
 
+DSPF (27 lines x 132 characters)
 ![cpyscn01-002.svg](samples/cpyscn01-014.svg)
-
 
 ## how to create
 
 Download the repo to your IBM i, e.g. to /OSS/CPYSCN2SVG.
 
+In a bash shell, run "make" to compile the source code. You can and should override the OBJLIB to create the command and the program in a library of your choice.
+
+```bash
+make OBJLIB=MYLIB
+```
+
+## how to use
+
+Start "recording" all your screens to a database file with command STRCPYSCN.
+
+```cl
+STRCPYSCN SRCDEV(*REQUESTER)     
+          OUTDEV(*NONE)          
+          OUTFILE(MYLIB/MYSCNCPY)
+```
+
+Answer the message "Cause . . . . . :   Start copy screen has been requested with output to *NONE. Reply C to prevent copy screen or G to allow it. (C G)" with "G".
+
+Now all your screens are recorded to the database file MYLIB/MYSCNCPY. (So don't type anything that shouldn't be visible to others.)
+
+When you're done, end the recording with command ENDCPYSCN.
+
+```cl
+ENDCPYSCN
+```
+
+Wait for the message "Copy Screen Image from YOURSCREEN has ended."
+
+```cl
+CPYSCN2SVG FILE(MYLIB/MYSCNCPY)
+           PATH(myscncpy)     
+           PREFIX(screen)    
+           INCDATE(*NO)        
+           INCTIME(*NO)        
+           INCCNT(3)           
+           INCSEP('-')         
+           OUTPUT(*HTML *MD)   
+```
+
+This will create svg files in the IFS directory "myscncpy" (will be created, if it doesn't exist) with names like screen-001.svg, screen-002.svg, ...

@@ -1,10 +1,12 @@
-OBJ_LIB = ANGO1                                                                                                        
-                                                                                                                          
-QOBJ_LIB = /QSYS.LIB/$(OBJ_LIB).LIB                                                                                         
-QSRC_PATH = /home/ANGO/CPYSCN2SVG                                                                                          
-                                                                                                                          
-$(QOBJ_LIB)/CPYSCN2SVG.CMD: QCMDSRC/CPYSCN2SVG.CMD                                                                                
- system "CRTCMD CMD($(OBJ_LIB)/CPYSCN2SVG) PGM($(OBJ_LIB)/CPYSCN2SVG) SRCSTMF('QCMDSRC/CPYSCN2SVG.CMD')"                 
-                                                                                                                          
-$(QOBJ_LIB)/CPYSCN2SVG.PGM: QRPGLESRC/CPYSCN2SVG.SQLRPGLE                                                                           
- system "CRTSQLRPGI OBJ($(OBJ_LIB)/CPYSCN2SVG) SRCSTMF('QRPGSRCLE/CPYSCN2SVG.SQLRPGLE') RPGPPOPT(*LVL2) DBGVIEW(*LIST)"
+OBJLIB?=ANGO1
+
+QOBJLIB=/QSYS.LIB/$(OBJLIB).LIB
+# QSRC_PATH=/home/ANGO/CPYSCN2SVG
+
+all: $(QOBJLIB)/CPYSCN2SVG.CMD $(QOBJLIB)/CPYSCN2SVG.PGM
+
+$(QOBJLIB)/CPYSCN2SVG.CMD: QCMDSRC/CPYSCN2SVG.CMD
+	system "CRTCMD CMD($(OBJLIB)/CPYSCN2SVG) PGM($(OBJLIB)/CPYSCN2SVG) SRCSTMF('QCMDSRC/CPYSCN2SVG.CMD') PRDLIB($(OBJLIB))"
+
+$(QOBJLIB)/CPYSCN2SVG.PGM: QRPGLESRC/CPYSCN2SVG.SQLRPGLE
+	system "CRTSQLRPGI OBJ($(OBJLIB)/CPYSCN2SVG) SRCSTMF('QRPGLESRC/CPYSCN2SVG.SQLRPGLE') INCDIR('./') RPGPPOPT(*LVL2) COMPILEOPT('TGTCCSID(*JOB)') DBGVIEW(*LIST)"
