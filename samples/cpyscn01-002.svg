@@ -1,17 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" height="550" width="960" preserveAspectRatio="xMinYMin meet" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">
 <style type="text/css">
   <![CDATA[
+ :root { color-scheme: light dark; }
  .t {  font-family: IBM3270, Consolas, monospace;
        font-size: 20px;
-       fill: #006400;
+       fill: light-dark( #006400, #00ff00);
        text-align: center; }
- .HI { font-weight: bold; fill: #000000; }
- .BL { fill: #b00020; }
- .CS { fill: #008b8b; }
- .BL.CS { fill: #a000a0; }
- .HI.BL.CS { fill: #003399; }
+ .HI { font-weight: bold; fill: light-dark( #000000, #f0f0f0); }
+ .BL { fill: light-dark( #b00020, #ff0000); }
+ .CS { fill: light-dark( #008b8b, #00ffff); }
+ .BL.CS { fill: light-dark( #a000a0, #ff1aff); }
+ .HI.BL.CS { fill: light-dark( #003399, #7890f0); }
  .l_UL { stroke: currentColor; stroke-width: 1px; }
- .l_CS { stroke: #008b8b; stroke-width: 1px; stroke-opacity: 0.5; }
+ .l_CS { stroke: light-dark( #008b8b, #00ffff); stroke-width: 1px; stroke-opacity: 0.5; }
   ]]>
 </style>
 <text x="12" y="22" class="t HI BL CS">M</text>
