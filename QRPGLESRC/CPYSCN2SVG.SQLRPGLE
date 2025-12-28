@@ -37,13 +37,13 @@ End-DS;
 
 
 Dcl-DS colorsGrnOnWht QUALIFIED;
-   grn  CHAR(7) DFT('#006400');
-   wht  CHAR(7) DFT('#000000');
-   blu  CHAR(7) DFT('#003399');
-   trq  CHAR(7) DFT('#008b8b');
-   red  CHAR(7) DFT('#b00020');
-   pnk  CHAR(7) DFT('#a000a0');
-   ylw  CHAR(7) DFT('#9a8700');
+   grn  CHAR(7) INZ('#006400');
+   wht  CHAR(7) INZ('#000000');
+   blu  CHAR(7) INZ('#003399');
+   trq  CHAR(7) INZ('#008b8b');
+   red  CHAR(7) INZ('#b00020');
+   pnk  CHAR(7) INZ('#a000a0');
+   ylw  CHAR(7) INZ('#9a8700');
 End-DS;
 
 Dcl-C #CRLF x'0D25';
