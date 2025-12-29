@@ -78,9 +78,11 @@ Although this seems to be not working Word documents, everything is black and wh
 ## Samples
 
 MAIN menu of <https://pub400.com> (24 lines x 80 characters)
+
 ![cpyscn01-002.svg](samples/cpyscn01-002.svg)
 
-DSPF (27 lines x 132 characters)
+Working with IFS-directory with command DSPF (27 lines x 132 characters)
+
 ![cpyscn01-002.svg](samples/cpyscn01-014.svg)
 
 ## how to create
@@ -144,7 +146,7 @@ You can also include a counter in the file names.
 
 ### HTML
 
-OUTPUT(*HTML) will create a html file with embedding <img> tags for all created svg files.
+OUTPUT(*HTML) will create a html file with embedding &lt;img&gt; tags for all created svg files.
 
 It contains also a simple css style to display the svg files with a border.
 
