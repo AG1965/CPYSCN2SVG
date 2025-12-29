@@ -561,6 +561,7 @@ Dcl-Proc f_processChar;
       RI x'21'; // Reverse Image
       HI x'22'; // High Intensity
       UL x'24'; // Underline
+      ND x'27'; // Non-Display
       BL x'28'; // Blink
       CS x'30'; // Column separators
       PR x'A0'; // Protect
@@ -578,25 +579,28 @@ Dcl-Proc f_processChar;
    // if the char is less than x'40', check for attribute and remove
    IF rtnChar < x'40';
       %ELEM(#classes) = 0;
-      IF %BITAND(rtnChar:ATR5250.RI) = ATR5250.RI;
-         #classes(*NEXT) = 'RI';
+      IF %BITAND(rtnChar:ATR5250.ND) = ATR5250.ND;
+      ELSE;
+         IF %BITAND(rtnChar:ATR5250.RI) = ATR5250.RI;
+            #classes(*NEXT) = 'RI';
+         ENDIF;
+         IF %BITAND(rtnChar:ATR5250.HI) = ATR5250.HI;
+            #classes(*NEXT) = 'HI';
+         ENDIF;
+         IF %BITAND(rtnChar:ATR5250.UL) = ATR5250.UL;
+            #classes(*NEXT) = 'UL';
+         ENDIF;
+         IF %BITAND(rtnChar:ATR5250.BL) = ATR5250.BL;
+            #classes(*NEXT) = 'BL';
+         ENDIF;
+         IF %BITAND(rtnChar:ATR5250.CS) = ATR5250.CS;
+            #classes(*NEXT) = 'CS';
+         ENDIF;
+         // "Protect" is irrelevant
+         // IF %BITAND(rtnChar:ATR5250.PR) = ATR5250.PR;
+         //    #classes(*NEXT) = 'PR';
+         // ENDIF;
       ENDIF;
-      IF %BITAND(rtnChar:ATR5250.HI) = ATR5250.HI;
-         #classes(*NEXT) = 'HI';
-      ENDIF;
-      IF %BITAND(rtnChar:ATR5250.UL) = ATR5250.UL;
-         #classes(*NEXT) = 'UL';
-      ENDIF;
-      IF %BITAND(rtnChar:ATR5250.BL) = ATR5250.BL;
-         #classes(*NEXT) = 'BL';
-      ENDIF;
-      IF %BITAND(rtnChar:ATR5250.CS) = ATR5250.CS;
-         #classes(*NEXT) = 'CS';
-      ENDIF;
-      // "Protect" is irrelevant
-      // IF %BITAND(rtnChar:ATR5250.PR) = ATR5250.PR;
-      //    #classes(*NEXT) = 'PR';
-      // ENDIF;
       #classString = %CONCATARR(' ':#classes);
       IF rtnChar = ATR5250.DF;
          #classString = '';
@@ -622,6 +626,7 @@ End-Proc;
 
 
 // -------------------------------------------------------------------------------------------------
+// subtract mySub from myValue, but do not go below zero
 Dcl-Proc f_subToZero;
    Dcl-PI *N LIKE(rtnValue);
       myValue           UNS(10) CONST;
