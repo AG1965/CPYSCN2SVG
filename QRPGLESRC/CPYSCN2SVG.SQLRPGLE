@@ -55,12 +55,12 @@ Dcl-S g_charSize    UNS(5) INZ(20);
 
 // Dcl-F QASCCPY DISK EXTFILE('QASCCPY') TEMPLATE;
 
-Dcl-DS RS1 QUALIFIED;
-   MAXROW UNS(5);
-   CURCEN CHAR(1);
-   CURDAT CHAR(6);
-   CURTIM CHAR(6);
-End-DS;
+// Dcl-DS RS1 QUALIFIED;
+//    MAXROW UNS(5);
+//    CURCEN CHAR(1);
+//    CURDAT CHAR(6);
+//    CURTIM CHAR(6);
+// End-DS;
 
 Dcl-S #IFS_SVG_FileName  VARCHAR(128);
 Dcl-S #IFS_SVG_FullName  VARCHAR(512);
@@ -69,9 +69,14 @@ Dcl-S #IFS_CSS_FullName  VARCHAR(512);
 Dcl-S #IFS_HTML_FullName VARCHAR(512);
 Dcl-S #IFS_MD_FullName   VARCHAR(512);
 
-Dcl-DS RS2 QUALIFIED DIM(27);
+Dcl-DS RS2 QUALIFIED DIM(*AUTO:27);
+   SIROW  CHAR(  3);
    SIDATA CHAR(132);
+   CURDAT CHAR(  8);
+   CURTIM CHAR(  6);
 End-DS;
+
+Dcl-DS RS2_HLP LIKEDS(RS2);
 
 // Bit   Value    Attribute (DSPATR-Name)
 //  0      1    Reverse Image (RI)
@@ -118,6 +123,8 @@ Dcl-Proc MAIN;
       MD     IND INZ(*OFF);
    End-DS;
 
+   Dcl-S #Last_IFS_SVG_FileName  LIKE(#IFS_SVG_FileName) INZ('');
+   Dcl-S #count_sameFileName     UNS(5) INZ(0);
    // --------------------------------------------------------------------------
    // create Directory
    #Cmd = 'MKDIR ''' + %TRIMR(PI_IFS_Path) + '''';
@@ -220,50 +227,46 @@ Dcl-Proc MAIN;
 
    QCMDEXC(#Cmd:%LEN(#Cmd));
 
-   // Declare a cursor to a result set that contains one line per screen and provides the number of lines (24 or 27)
-   EXEC SQL DECLARE CPYSCN2SVG_1 CURSOR FOR
-            SELECT MAX(SIROW),
-                  CURCEN, CURDAT, CURTIM
-            FROM QASCCPY
-            WHERE SIROW <> ' '
-            GROUP BY CURCEN, CURDAT, CURTIM
-            ORDER BY CURCEN, CURDAT, CURTIM;
 
-   EXEC SQL CLOSE CPYSCN2SVG_1;
-   EXEC SQL OPEN  CPYSCN2SVG_1;
+   // now declare a second cursor to fetch the actual screen data for this screen
+   EXEC SQL DECLARE CPYSCN2SVG_2 SCROLL CURSOR FOR
+            SELECT SIROW, SIDATA,
+                   CASE WHEN CURCEN = '1' THEN '20' 
+                                          ELSE '19' END CONCAT CURDAT, 
+                   CURTIM
+            FROM QASCCPY SCNCPY
+            WHERE SIROW <> ' '
+            ORDER BY RRN(SCNCPY);
+
+   EXEC SQL CLOSE CPYSCN2SVG_2;
+   EXEC SQL OPEN  CPYSCN2SVG_2;
 
    DOU SQLCOD <> 0;
-      EXEC SQL FETCH CPYSCN2SVG_1 INTO :RS1;
+
+      EXEC SQL FETCH CPYSCN2SVG_2
+                 FOR 27 ROWS
+                INTO :RS2;
       IF SQLCOD <> 0;
          LEAVE;
       ENDIF;
 
+      // check, whether we read too many rows
+      IF %ELEM(RS2) = 27;
+         IF RS2(27).SIROW = '03 ';
+            %ELEM(RS2) = 24;
+            EXEC SQL FETCH RELATIVE -3 FROM CPYSCN2SVG_2 
+                      INTO :RS2_HLP;
+         ENDIF;
+      ENDIF;
+
+
       RESET screen;
-      screen.rows = RS1.MAXROW;
+      screen.rows = %ELEM(RS2);
       IF screen.rows = 27;
          screen.columns = 132;
       ELSE;
          screen.columns =  80;
       ENDIF;
-
-      // now declare a second cursor to fetch the actual screen data for this screen
-      EXEC SQL DECLARE CPYSCN2SVG_2 CURSOR FOR
-               SELECT SIDATA
-               FROM QASCCPY
-               WHERE SIROW <> ' '
-               AND CURCEN = :RS1.CURCEN
-               AND CURDAT = :RS1.CURDAT
-               AND CURTIM = :RS1.CURTIM
-               ORDER BY SIROW;
-
-      EXEC SQL CLOSE CPYSCN2SVG_2;
-      EXEC SQL OPEN  CPYSCN2SVG_2;
-
-      EXEC SQL FETCH CPYSCN2SVG_2
-                 FOR :RS1.MAXROW ROWS
-                INTO :RS2;
-
-      EXEC SQL CLOSE CPYSCN2SVG_2;
 
       // build the svg filename
       #IFS_SVG_FileName = %TRIMR(PI_IFS_Prefix);
@@ -271,26 +274,26 @@ Dcl-Proc MAIN;
       SELECT;
          WHEN PI_IFS_IncDate = '*ISO';
             #IFS_SVG_FileName += %TRIMR(PI_IFS_IncSepChar) +
-                                 '20' + %SUBST(RS1.CURDAT:1:2) + '-' +
-                                       %SUBST(RS1.CURDAT:3:2) + '-' +
-                                       %SUBST(RS1.CURDAT:5:2);
+                                 %SUBST(RS2(1).CURDAT:1:4) + '-' +
+                                 %SUBST(RS2(1).CURDAT:5:2) + '-' +
+                                 %SUBST(RS2(1).CURDAT:7:2);
          WHEN PI_IFS_IncDate = '*ISO0';
             #IFS_SVG_FileName += %TRIMR(PI_IFS_IncSepChar) +
-                                 '20' + RS1.CURDAT;
+                                 RS2(1).CURDAT;
       ENDSL;
 
       SELECT;
          WHEN PI_IFS_IncTime = '*HHMMSS';
             #IFS_SVG_FileName += %TRIMR(PI_IFS_IncSepChar) +
-                                 RS1.CURTIM;
+                                 RS2(1).CURTIM;
          WHEN PI_IFS_IncTime = '*HHMM';
             #IFS_SVG_FileName += %TRIMR(PI_IFS_IncSepChar) +
-                                 %SUBST(RS1.CURTIM:1:4);
+                                 %SUBST(RS2(1).CURTIM:1:4);
          WHEN PI_IFS_IncTime = '*HH-MM-SS';
             #IFS_SVG_FileName += %TRIMR(PI_IFS_IncSepChar) +
-                                 %SUBST(RS1.CURTIM:1:2) + '-' +
-                                 %SUBST(RS1.CURTIM:3:2) + '-' +
-                                 %SUBST(RS1.CURTIM:5:2);
+                                 %SUBST(RS2(1).CURTIM:1:2) + '-' +
+                                 %SUBST(RS2(1).CURTIM:3:2) + '-' +
+                                 %SUBST(RS2(1).CURTIM:5:2);
       ENDSL;
 
       #FileCount.num += 1;
@@ -299,6 +302,15 @@ Dcl-Proc MAIN;
                               %SUBST(#FileCount.alpha:
                                      6 - PI_IFS_CntDigits:
                                      PI_IFS_CntDigits);
+      ENDIF;
+
+      // if the file name is equal to the last file name, include a counter to prevent overwriting
+      IF #IFS_SVG_FileName = #Last_IFS_SVG_FileName;
+         #count_sameFileName += 1;
+         #IFS_SVG_FileName += ' (' + %TRIM(%CHAR(#count_sameFileName)) + ')';
+      ELSE;
+         #Last_IFS_SVG_FileName = #IFS_SVG_FileName;
+         #count_sameFileName = 1;
       ENDIF;
 
       #IFS_SVG_FileName += '.svg';
@@ -326,19 +338,19 @@ Dcl-Proc MAIN;
 
    ENDDO;
 
-   EXEC SQL CLOSE CPYSCN2SVG_1;
 
    IF #output.HTML;
       f_writeLineHTML('</body></html>');
    ENDIF;
 
 
-
+   // ==========================================================================
    ON-EXIT;
 
       #Cmd = 'DLTOVR QASCCPY';
       QCMDEXC(#Cmd:%LEN(#Cmd));
 
+      EXEC SQL CLOSE CPYSCN2SVG_2;
 
 End-Proc;
 

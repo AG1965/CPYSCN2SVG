@@ -36,13 +36,15 @@ Resizing these screenshots can be a nightmare on it's own.
 
 ### known issues
 
+* the underline could and should be heavily improved. Currently every character is underlined on it's own, which makes files unnecessary big and harder to render. One ends up with >100 of lines in the svg file where one long line would do.  (This would need some more complex logic to find sequences of underlined characters and draw one line for them.)
+
 * As the screenshots created by STRCPYSCN contain only character data, subfile bars and other graphical enhancements (some emulators can be set to display function buttons as real clickable buttons) are not recreated. (Although logic could be added to draw boxes around function keys, I don't see a solution for the other things.)
 
 * water marks aren't included. Svg could be used to create powerful watermarks; but in most use cases, these would be annoying, so i didn't include any logic for that.
 
 ### further ideas
 
-* [ ] parameters for from and to record in the outfile created by STRCPYSCN
+* [ ] parameters for from and to record (or from and to date/time) in the outfile created by STRCPYSCN
 * [ ] Search/replace to change system / user names to other values
 * [ ] exit programs for further manipulations
 
@@ -65,6 +67,13 @@ Although "dark mode" is now in fashion (Ha! We knew we were right all the time!)
 So i assume these svg files will be used mainly on a white background. So i had to change colors, as DSPATR(HI) results in white on a 5250 color screen and that would be invisible on a white background.
 
 The mapping is done in CSS; so you could use the same svg files in dark mode on one html page, and in light mode on another. To make this work, use relative paths for the css file or embed the style in the html file(s).
+
+Update as of release 0.2.0:
+
+There's a feature in css to define different styles for "light mode" and "dark mode". So the created svg files now contain css definitions for both modes.
+If the svg file is displayed on a page that uses dark mode, the dark mode styles will be applied automatically and vice versa.
+
+Although this seems to be not working Word documents, everything is black and white there.
 
 ## Samples
 
