@@ -2,22 +2,16 @@
 
 Convert the output of IBM i command STRCPYSCN to svg files in the IFS.
 
-## Usage
+## Use cases - reason for creating this tool
 
-Create a file with "screenshots" with the IBM i command STRCPYSCN.
+The IBM i command STRCPYSCN is a powerful tool to document what one has done.
 
-Now do in this session what you want to document.
-
-The typical use cases are:
+I always wanted to use it's *OUTFILE output to help in these use cases:
 
 * screenshots to document how to use a 5250 program
 * screenshots to document how to recreate an error
 
-Every screen you see now is written to the table you stated on the STRCPYSCN command.
-
-When you're ready, use command ENDCPYSCN to end copying screens to the table.
-
-Use command CPYSCN2SVG from this repo to convert the database records to svg files in an IFS directory of your choice.
+This tool creates svg files from the database file created by STRCPYSCN.
 
 The created svg files can be used
 
@@ -30,13 +24,15 @@ The created svg files can be used
 
 To make documents like user manuals look consistent, all users creating screenshots would have to use the same color settings. Which is rather hard to achieve in real life.
 
-They are quite big in file size, although they contain mainly letters and minimal graphics.
+Also ACS screenshots are bitmap images (png, jpg, ...). When included in documents, these images don't scale well, so resizing these screenshots can be a nightmare on it's own.
 
-Resizing these screenshots can be a nightmare on it's own.
+The svg files contain `preserveAspectRatio="xMinYMin meet"`, so they scale well in every direction without distortion.
 
 ### known issues
 
 * the underline could and should be heavily improved. Currently every character is underlined on it's own, which makes files unnecessary big and harder to render. One ends up with >100 of lines in the svg file where one long line would do.  (This would need some more complex logic to find sequences of underlined characters and draw one line for them.)
+
+* When using a monospaced font, the character output might also be improved by using a single `<text>` element for subsequent characters with the same attributes instead of one `<text>` element per character. But positioning characters individually is simpler to implement and understand and i have a little space for column separators.
 
 * As the screenshots created by STRCPYSCN contain only character data, subfile bars and other graphical enhancements (some emulators can be set to display function buttons as real clickable buttons) are not recreated. (Although logic could be added to draw boxes around function keys, I don't see a solution for the other things.)
 
@@ -50,7 +46,7 @@ Resizing these screenshots can be a nightmare on it's own.
 
 ## svg
 
-The created svg files can use any font as every character is positioned on the "screen", so it hasn't to be a monospace font, where every character has the same width, but i'd recommend using one.
+The created svg files can use any font as every character is positioned on the "screen", so it hasn't necessarily to be a monospace font, where every character has the same width, but i'd recommend using one, as most other fonts just look weird.
 
 As all svg commands have classes, the appearance can be changed via CSS (Cascading Style Sheets).
 
