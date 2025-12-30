@@ -7,25 +7,9 @@
              PARM       KWD(PATH) TYPE(*PNAME) CASE(*MIXED) MIN(1) LEN(128) +
                           PROMPT('Path for svg-files')
 
-             PARM       KWD(PREFIX) TYPE(*PNAME) CASE(*MIXED) LEN(64) +
-                          DFT('cpyscn2svg') +
-                          PROMPT('Prefix for svg-files')
-             PARM       KWD(INCDATE) TYPE(*CHAR) LEN(10) +
-                          DFT(*ISO) +
-                          RSTD(*YES) VALUES(*NO *ISO *ISO0) +
-                          PROMPT('Append Date')
-             PARM       KWD(INCTIME) TYPE(*CHAR) LEN(10) +
-                          DFT(*HHMMSS) +
-                          RSTD(*YES) VALUES(*NO *HHMMSS *HHMM '*HH-MM-SS') +
-                          PROMPT('Append time')
-             PARM       KWD(INCCNT) TYPE(*DEC) LEN(1 0) +
-                          DFT(*NONE) RANGE(1 5) +
-                          SPCVAL((*NONE 0)) +
-                          PROMPT('Append n digits counter')
-             PARM       KWD(INCSEP) TYPE(*CHAR) LEN(1) +
-                          DFT('_') +
-                          SPCVAL((*NONE '')) +
-                          PROMPT('Separator character')
+             PARM       KWD(SVGNAME) TYPE(NAMESTRUCT) +
+                          PROMPT('SVG-Filename structure')
+
              PARM       KWD(OUTPUT) TYPE(*CHAR) LEN(10) MAX(2) +
                           DFT(*HTML) +
                           RSTD(*YES) VALUES(*NONE *HTML *MD) +
@@ -46,3 +30,22 @@
                           SPCVAL((*LIBL) (*CURLIB) (*USRLIBL) +
                           (*ALL) (*ALLUSR)) PROMPT('Library')
 
+ NAMESTRUCT: ELEM       TYPE(*PNAME) LEN(64) CASE(*MIXED) +
+                            DFT('cpyscn2svg') +     
+                            PROMPT('Prefix for svg-files')
+             ELEM       TYPE(*CHAR) LEN(10) +
+                            DFT(*ISO) +
+                            RSTD(*YES) VALUES(*NO *ISO *ISO0) +
+                            PROMPT('Append Date')
+             ELEM       TYPE(*CHAR) LEN(10) +
+                            DFT(*HHMMSS) +
+                            RSTD(*YES) VALUES(*NO *HHMMSS *HHMM '*HH-MM-SS') +
+                            PROMPT('Append time')
+             ELEM       TYPE(*DEC) LEN(1 0) +
+                            DFT(*NONE) RANGE(1 5) +
+                            SPCVAL((*NONE 0)) +
+                            PROMPT('Append n digits counter')
+             ELEM       TYPE(*CHAR) LEN(1) +
+                            DFT('_') +
+                            SPCVAL((*NONE '')) +
+                            PROMPT('Separator character')

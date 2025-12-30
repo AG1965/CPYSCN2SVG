@@ -8,16 +8,12 @@ Ctl-Opt MAIN(MAIN) DECEDIT('0.') OPTION(*NODEBUGIO:*SRCSTMT:*NOUNREF)
 // https://github.com/AG1965/CPYSCN2SVG
 // -----------------------------------------------------------------------------
 Dcl-PR MAIN EXTPGM('CPYSCN2SVG');
-   qualSCNCPY     LIKEDS(qualObj_T);
-   IFS_Path          CHAR(128);
-   IFS_Prefix        CHAR( 64);
-   IFS_IncDate       CHAR( 10);
-   IFS_IncTime       CHAR( 10);
-   IFS_CntDigits   PACKED(1:0);
-   IFS_IncSepChar    CHAR(  1);
-   IFS_Output      LIKEDS(list_Output_T);
-   CSS               CHAR(128);
-   CSS_externals   LIKEDS(list_externals_T);
+   qualSCNCPY          LIKEDS(qualObj_T);
+   IFS_Path              CHAR(128);
+   SVGfilenameStruct   LIKEDS(SVGfilename_structure_T);
+   Output              LIKEDS(list_Output_T);
+   CSS                   CHAR(128);
+   CSS_externals       LIKEDS(list_externals_T);
 End-PR;
 
 Dcl-DS qualObj_T QUALIFIED TEMPLATE;
@@ -33,6 +29,15 @@ End-DS;
 Dcl-DS list_externals_T QUALIFIED TEMPLATE;
    count   INT(5);
    entry  CHAR(128) DIM(5);
+End-DS;
+
+Dcl-DS SVGfilename_structure_T QUALIFIED TEMPLATE;
+   NumberOfElements   INT(5);
+   Prefix            CHAR( 64);
+   IncDate           CHAR( 10);
+   IncTime           CHAR( 10);
+   CntDigits       PACKED(1:0);
+   IncSepChar        CHAR(  1);
 End-DS;
 
 
@@ -103,12 +108,8 @@ Dcl-Proc MAIN;
    Dcl-PI *N;
       PI_SCNCPY          LIKEDS(qualObj_T);
       PI_IFS_Path          CHAR(128);
-      PI_IFS_Prefix        CHAR( 64);
-      PI_IFS_IncDate       CHAR( 10);
-      PI_IFS_IncTime       CHAR( 10);
-      PI_IFS_CntDigits   PACKED(1:0);
-      PI_IFS_IncSepChar    CHAR(  1);
-      PI_IFS_Output      LIKEDS(list_Output_T);
+      PI_SVG_Filename    LIKEDS(SVGfilename_structure_T);
+      PI_Output          LIKEDS(list_Output_T);
       PI_CSS               CHAR(128);
       PI_CSS_externals   LIKEDS(list_externals_T);
    End-PI;
@@ -134,9 +135,9 @@ Dcl-Proc MAIN;
    ENDMON;
 
 
-   #IFS_HTML_FullName = %TRIMR(PI_IFS_Path) +'/' + %TRIMR(PI_IFS_Prefix) +
+   #IFS_HTML_FullName = %TRIMR(PI_IFS_Path) +'/' + %TRIMR(PI_SVG_Filename.Prefix) +
                         '.html';
-   #IFS_MD_FullName   = %TRIMR(PI_IFS_Path) +'/' + %TRIMR(PI_IFS_Prefix) +
+   #IFS_MD_FullName   = %TRIMR(PI_IFS_Path) +'/' + %TRIMR(PI_SVG_Filename.Prefix) +
                         '.md';
 
 
@@ -150,6 +151,7 @@ Dcl-Proc MAIN;
    ' .BL { fill: light-dark( #b00020, #ff0000); }' + #CRLF +
    ' .CS { fill: light-dark( #008b8b, #00ffff); }' + #CRLF +
    ' .BL.CS { fill: light-dark( #a000a0, #ff1aff); }' + #CRLF +
+   ' .CS.HI { fill: light-dark( #9a8700, #ffff00); }' + #CRLF +
    ' .HI.BL.CS { fill: light-dark( #003399, #7890f0); }' + #CRLF +
    ' .l_UL { stroke: currentColor; stroke-width: 1px; }' + #CRLF +
    ' .l_CS { stroke: light-dark( #008b8b, #00ffff); stroke-width: 1px; stroke-opacity: 0.5; }' + #CRLF;
@@ -172,8 +174,8 @@ Dcl-Proc MAIN;
    ENDIF;
 
 
-   #output.HTML = %lookup('*HTML':PI_IFS_Output.entry) > 0;
-   #output.MD   = %lookup('*MD'  :PI_IFS_Output.entry) > 0;
+   #output.HTML = %lookup('*HTML':PI_Output.entry) > 0;
+   #output.MD   = %lookup('*MD'  :PI_Output.entry) > 0;
 
    IF #output.HTML;
       f_writeLineHTML(
@@ -201,12 +203,12 @@ Dcl-Proc MAIN;
          '<code>CPYSCN2SVG FILE(' + %TRIMR(PI_SCNCPY.Lib) + '/' +
                                     %TRIMR(PI_SCNCPY.Name) + ')' +
                          ' PATH(''' + %TRIMR(PI_IFS_Path) + ''')' +
-                         ' PREFIX(''' + %TRIMR(PI_IFS_Prefix) + ''')' +
-                         ' INCDATE(' + %TRIMR(PI_IFS_IncDate) + ')' +
-                         ' INCTIME(' + %TRIMR(PI_IFS_IncTime) + ')' +
-                         ' INCCNT(' + %CHAR(PI_IFS_CntDigits) + ')' +
-                         ' INCSEP(''' + PI_IFS_IncSepChar + ''')' +
-                         ' OUTPUT(' + %CONCATARR(' ':PI_IFS_Output.entry) + ')' +     
+                         ' SVGNAME(''' + %TRIMR(PI_SVG_Filename.Prefix) + '''' +
+                                   ' ' + %TRIMR(PI_SVG_Filename.IncDate) + 
+                                   ' ' + %TRIMR(PI_SVG_Filename.IncTime) +
+                                   ' ' + %CHAR(PI_SVG_Filename.CntDigits) +
+                                   ' ''' + PI_SVG_Filename.IncSepChar + ''')' +
+                         ' OUTPUT(' + %CONCATARR(' ':PI_Output.entry) + ')' +     
                          ' CSS(''' + PI_CSS + ''')' +
                          ' CSSEXT(' + %CONCATARR(' ':PI_CSS_externals.entry) + ')' +     
          '</code>' + #CRLF
@@ -269,39 +271,39 @@ Dcl-Proc MAIN;
       ENDIF;
 
       // build the svg filename
-      #IFS_SVG_FileName = %TRIMR(PI_IFS_Prefix);
+      #IFS_SVG_FileName = %TRIMR(PI_SVG_Filename.Prefix);
 
       SELECT;
-         WHEN PI_IFS_IncDate = '*ISO';
-            #IFS_SVG_FileName += %TRIMR(PI_IFS_IncSepChar) +
+         WHEN PI_SVG_Filename.IncDate = '*ISO';
+            #IFS_SVG_FileName += %TRIMR(PI_SVG_Filename.IncSepChar) +
                                  %SUBST(RS2(1).CURDAT:1:4) + '-' +
                                  %SUBST(RS2(1).CURDAT:5:2) + '-' +
                                  %SUBST(RS2(1).CURDAT:7:2);
-         WHEN PI_IFS_IncDate = '*ISO0';
-            #IFS_SVG_FileName += %TRIMR(PI_IFS_IncSepChar) +
+         WHEN PI_SVG_Filename.IncDate = '*ISO0';
+            #IFS_SVG_FileName += %TRIMR(PI_SVG_Filename.IncSepChar) +
                                  RS2(1).CURDAT;
       ENDSL;
 
       SELECT;
-         WHEN PI_IFS_IncTime = '*HHMMSS';
-            #IFS_SVG_FileName += %TRIMR(PI_IFS_IncSepChar) +
+         WHEN PI_SVG_Filename.IncTime = '*HHMMSS';
+            #IFS_SVG_FileName += %TRIMR(PI_SVG_Filename.IncSepChar) +
                                  RS2(1).CURTIM;
-         WHEN PI_IFS_IncTime = '*HHMM';
-            #IFS_SVG_FileName += %TRIMR(PI_IFS_IncSepChar) +
+         WHEN PI_SVG_Filename.IncTime = '*HHMM';
+            #IFS_SVG_FileName += %TRIMR(PI_SVG_Filename.IncSepChar) +
                                  %SUBST(RS2(1).CURTIM:1:4);
-         WHEN PI_IFS_IncTime = '*HH-MM-SS';
-            #IFS_SVG_FileName += %TRIMR(PI_IFS_IncSepChar) +
+         WHEN PI_SVG_Filename.IncTime = '*HH-MM-SS';
+            #IFS_SVG_FileName += %TRIMR(PI_SVG_Filename.IncSepChar) +
                                  %SUBST(RS2(1).CURTIM:1:2) + '-' +
                                  %SUBST(RS2(1).CURTIM:3:2) + '-' +
                                  %SUBST(RS2(1).CURTIM:5:2);
       ENDSL;
 
       #FileCount.num += 1;
-      IF PI_IFS_CntDigits > 0;
-         #IFS_SVG_FileName += %TRIMR(PI_IFS_IncSepChar) +
+      IF PI_SVG_Filename.CntDigits > 0;
+         #IFS_SVG_FileName += %TRIMR(PI_SVG_Filename.IncSepChar) +
                               %SUBST(#FileCount.alpha:
-                                     6 - PI_IFS_CntDigits:
-                                     PI_IFS_CntDigits);
+                                     6 - PI_SVG_Filename.CntDigits:
+                                     PI_SVG_Filename.CntDigits);
       ENDIF;
 
       // if the file name is equal to the last file name, include a counter to prevent overwriting
@@ -434,14 +436,7 @@ Dcl-Proc f_svg;
                                 %SUBST(RS2(#row).SIDATA:#col:1):
                                 #classString);
 
-         // #charWidth = %LEN(%SUBST(RS2(#row).SIDATA:#col:1)); // TODO: das kann ja nur 1 sein?!
-         IF #char1 <> *BLANK;
-            f_writeLineSVG('<text x="' + %CHAR(svgPosX) + '"' +
-                           ' y="' + %CHAR(svgPosY) + '"' +
-                           ' class="t' + #classString + '">' +
-                           #char1 + '</text>');
-         ENDIF;
-
+         // underline first, so characters like "g" can write over it
          IF %SCAN(' UL':#classString) > 0;
             f_writeLineSVG('<line x1="' + %CHAR(f_subToZero(svgPosX:1)) + '"' +
                                 ' y1="' + %CHAR(svgPosY + 1) + '"' +
@@ -449,6 +444,14 @@ Dcl-Proc f_svg;
                                 ' y2="' + %CHAR(svgPosY + 1) + '"' +
                                 ' class="l_UL" />');
          ENDIF;
+
+         IF #char1 <> *BLANK;
+            f_writeLineSVG('<text x="' + %CHAR(svgPosX) + '"' +
+                           ' y="' + %CHAR(svgPosY) + '"' +
+                           ' class="t' + #classString + '">' +
+                           #char1 + '</text>');
+         ENDIF;
+
          IF %SCAN(' HI BL CS':#classString) > 0;
             #classString = %SCANRPL(' HI BL CS':' HIBLCS':#classString);
          ELSE;
