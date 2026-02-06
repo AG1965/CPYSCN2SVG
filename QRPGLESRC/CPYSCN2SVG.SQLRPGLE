@@ -464,6 +464,16 @@ Dcl-Proc f_svg;
 
    Dcl-S #i UNS(5);
 
+   // Variables for grouping consecutive characters
+   Dcl-S #textBuffer    VARCHAR(256);
+   Dcl-S #lastClass     VARCHAR(18);
+   Dcl-S #groupStartX   UNS(10);
+   Dcl-S #groupStartCol UNS(5);
+
+   // Variables for grouping underlines
+   Dcl-S #ulStartX      UNS(10);
+   Dcl-S #ulActive      IND INZ(*OFF);
+
    // --------------------------------------------------------------------------
    charHeight = g_charSize + 2;
 
@@ -545,28 +555,61 @@ Dcl-Proc f_svg;
    // f_writeLineSVG('<rect x="0" y="0" width="1" height="1" class="t" />');
 
    FOR #row = 1 TO screen.rows;
+      RESET #textBuffer;
+      RESET #lastClass;
+      #groupStartX = 0;
+      #groupStartCol = 0;
+      #ulActive = *OFF;
+
       FOR #col = 1 TO screen.columns;
          #char1 = f_processChar(#row:
                                 #col:
                                 %SUBST(RS2(#row).SIDATA:#col:1):
                                 #classString);
 
-         // underline first, so characters like "g" can write over it
-         IF %SCAN(' UL':#classString) > 0;
-            f_writeLineSVG('<line x1="' + %CHAR(f_subToZero(svgPosX:1)) + '"' +
-                                ' y1="' + %CHAR(svgPosY + 1) + '"' +
-                                ' x2="' + %CHAR(svgPosX + g_charWidth - 1) + '"' +
-                                ' y2="' + %CHAR(svgPosY + 1) + '"' +
-                                ' class="l_UL" />');
-         ENDIF;
-
-         IF #char1 <> *BLANK;
-            f_writeLineSVG('<text x="' + %CHAR(svgPosX) + '"' +
+         // Check if we need to flush the text buffer
+         // (class changed, or we hit a blank after non-blanks)
+         IF (#classString <> #lastClass AND #textBuffer <> '') OR
+            (#char1 = *BLANK AND #textBuffer <> '');
+            
+            // Write accumulated text
+            f_writeLineSVG('<text x="' + %CHAR(#groupStartX) + '"' +
                            ' y="' + %CHAR(svgPosY) + '"' +
-                           ' class="t' + #classString + '">' +
-                           #char1 + '</text>');
+                           ' class="t' + #lastClass + '">' +
+                           f_escapeXML(#textBuffer) + '</text>');
+            RESET #textBuffer;
          ENDIF;
 
+         // Handle underline grouping
+         IF %SCAN(' UL':#classString) > 0;
+            IF NOT #ulActive;
+               // Start new underline
+               #ulStartX = f_subToZero(svgPosX:1);
+               #ulActive = *ON;
+            ENDIF;
+         ELSE;
+            IF #ulActive;
+               // End underline - draw the line
+               f_writeLineSVG('<line x1="' + %CHAR(#ulStartX) + '"' +
+                                   ' y1="' + %CHAR(svgPosY + 1) + '"' +
+                                   ' x2="' + %CHAR(f_subToZero(svgPosX:1)) + '"' +
+                                   ' y2="' + %CHAR(svgPosY + 1) + '"' +
+                                   ' class="l_UL" />');
+               #ulActive = *OFF;
+            ENDIF;
+         ENDIF;
+
+         // Add character to buffer if not blank
+         IF #char1 <> *BLANK;
+            IF #textBuffer = '';
+               #groupStartX = svgPosX;
+               #groupStartCol = #col;
+               #lastClass = #classString;
+            ENDIF;
+            #textBuffer += #char1;
+         ENDIF;
+
+         // Handle column separators (still individual lines)
          IF %SCAN(' HI BL CS':#classString) > 0;
             #classString = %SCANRPL(' HI BL CS':' HIBLCS':#classString);
          ELSE;
@@ -586,6 +629,24 @@ Dcl-Proc f_svg;
 
          svgPosX += g_charWidth;
       ENDFOR;
+
+      // Flush any remaining text at end of row
+      IF #textBuffer <> '';
+         f_writeLineSVG('<text x="' + %CHAR(#groupStartX) + '"' +
+                        ' y="' + %CHAR(svgPosY) + '"' +
+                        ' class="t' + #lastClass + '">' +
+                        f_escapeXML(#textBuffer) + '</text>');
+      ENDIF;
+
+      // Close any open underline at end of row
+      IF #ulActive;
+         f_writeLineSVG('<line x1="' + %CHAR(#ulStartX) + '"' +
+                             ' y1="' + %CHAR(svgPosY + 1) + '"' +
+                             ' x2="' + %CHAR(svgPosX - 1) + '"' +
+                             ' y2="' + %CHAR(svgPosY + 1) + '"' +
+                             ' class="l_UL" />');
+      ENDIF;
+
       svgPosX  = 0;
       svgPosY += charHeight;
    ENDFOR;
@@ -760,5 +821,27 @@ Dcl-Proc f_subToZero;
    ENDIF;
 
    RETURN rtnValue;
+
+End-Proc;
+
+// -------------------------------------------------------------------------------------------------
+// Escape special XML characters in text content
+Dcl-Proc f_escapeXML;
+   Dcl-PI *N VARCHAR(512);
+      myText VARCHAR(256) CONST;
+   End-PI;
+
+   Dcl-S rtnText VARCHAR(512);
+
+   rtnText = myText;
+   
+   // Replace special XML characters
+   rtnText = %SCANRPL('&':'&amp;':rtnText);
+   rtnText = %SCANRPL('<':'&lt;':rtnText);
+   rtnText = %SCANRPL('>':'&gt;':rtnText);
+   rtnText = %SCANRPL('"':'&quot;':rtnText);
+   rtnText = %SCANRPL('''':'&apos;':rtnText);
+
+   RETURN rtnText;
 
 End-Proc;

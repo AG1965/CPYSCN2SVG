@@ -28,11 +28,13 @@ Also ACS screenshots are bitmap images (png, jpg, ...). When included in documen
 
 The svg files contain `preserveAspectRatio="xMinYMin meet"`, so they scale well in every direction without distortion.
 
+### Recent Improvements (v0.3.0)
+
+* **Optimized underline rendering**: Consecutive underlined characters are now rendered with a single line instead of individual lines per character, significantly reducing file size and improving rendering performance.
+
+* **Character grouping**: Consecutive characters with the same display attributes are now grouped into single `<text>` elements, reducing the number of SVG elements and file size while maintaining precise positioning.
+
 ### known issues
-
-* the underline could and should be heavily improved. Currently every character is underlined on it's own, which makes files unnecessary big and harder to render. One ends up with >100 of lines in the svg file where one long line would do.  (This would need some more complex logic to find sequences of underlined characters and draw one line for them.)
-
-* When using a monospaced font, the character output might also be improved by using a single `<text>` element for subsequent characters with the same attributes instead of one `<text>` element per character. But positioning characters individually is simpler to implement and understand and i have a little space for column separators.
 
 * As the screenshots created by STRCPYSCN contain only character data, subfile bars and other graphical enhancements (some emulators can be set to display function buttons as real clickable buttons) are not recreated. (Although logic could be added to draw boxes around function keys, I don't see a solution for the other things.)
 
@@ -105,8 +107,8 @@ CRTSQLRPGI OBJ(MYLIB/CPYSCN2SVG) SRCSTMF('QRPGLESRC/CPYSCN2SVG.SQLRPGLE') INCDIR
 Start "recording" all your screens to a database file with command STRCPYSCN.
 
 ```cl
-STRCPYSCN SRCDEV(*REQUESTER)     
-          OUTDEV(*NONE)          
+STRCPYSCN SRCDEV(*REQUESTER)
+          OUTDEV(*NONE)
           OUTFILE(MYLIB/MYSCNCPY)
 ```
 
@@ -124,16 +126,125 @@ Wait for the message "Copy Screen Image from YOURSCREEN has ended."
 
 ```cl
 CPYSCN2SVG FILE(MYLIB/MYSCNCPY)
-           PATH(myscncpy)     
-           PREFIX(screen)    
-           INCDATE(*NO)        
-           INCTIME(*NO)        
-           INCCNT(3)           
-           INCSEP('-')         
-           OUTPUT(*HTML *MD)   
+           PATH(myscncpy)
+           SVGNAME(screen *NO *NO 3 '-')
+           OUTPUT(*HTML *MD)
+           CSS(*WEB *INLINE *NONE *NONE *NONE)
 ```
 
 This will create svg files in the IFS directory "myscncpy" (will be created, if it doesn't exist) with names like screen-001.svg, screen-002.svg, ...
+
+### Command Parameters
+
+#### FILE
+
+Qualified name of the database file created by STRCPYSCN command.
+
+* Format: `FILE(library/filename)`
+* Library can be: `*LIBL`, `*CURLIB`, `*USRLIBL`, `*ALL`, `*ALLUSR`, or a specific library name
+
+#### PATH
+
+IFS path where SVG files will be created. Directory will be created if it doesn't exist.
+
+* Format: `PATH('path/to/directory')`
+* Case-sensitive, mixed case allowed
+
+#### SVGNAME - SVG Filename Structure
+
+Controls how SVG filenames are generated. This is a compound parameter with 5 elements:
+
+1. **Prefix** (default: 'cpyscn2svg')
+
+   * Base name for all generated files
+   * Example: `PREFIX(myscreen)` → myscreen-001.svg
+
+2. **Date Format** (default: *ISO)
+
+   * `*NO` - Don't include date
+   * `*ISO` - Include date as YYYY-MM-DD
+   * `*ISO0` - Include date as YYYYMMDD (no separators)
+
+3. **Time Format** (default: *HHMMSS)
+
+   * `*NO` - Don't include time
+   * `*HHMMSS` - Include time as HHMMSS
+   * `*HHMM` - Include time as HHMM
+   *-* `*HH-MM-SS` - Include time as HH-MM-SS
+
+4. **Counter Digits** (default: *NONE)
+
+   * `*NONE` or `0` - No counter
+   * `1` to `5` - Number of digits for sequential counter
+
+5. **Separator Character** (default: '_')
+
+   * Character to separate filename components
+   * `*NONE` or `''` - No separator
+   * Any single character like '-', '_', etc.
+
+Example: `SVGNAME('screen' *ISO *HHMM 3 '-')` produces: screen-2026-02-06-1430-001.svg
+
+#### OUTPUT
+
+Controls generation of HTML and/or Markdown index files.
+
+* `*NONE` - No index files
+* `*HTML` - Generate HTML index file
+* `*MD` - Generate Markdown index file
+* Can specify both: `OUTPUT(*HTML *MD)`
+
+#### CSS - Cascading Style Sheet Options
+
+Controls CSS generation and styling. This is a compound parameter with 5 elements:
+
+1. **CSS Mode** (default: *WEB)
+
+   * `*NONE` - No CSS styling
+   * `*WEB` - Automatic light/dark mode support using CSS `light-dark()` function
+   * `*LIGHT` - Light mode only (black text on white background)
+   * `*DARK` - Dark mode only (green text on black background, traditional 5250 style)
+
+2. **CSS Location** (default: *INLINE)
+
+   * `*INLINE` - Embed CSS directly in each SVG file (recommended)
+   * `*NONE` - No CSS file generation
+   * `'filename.css'` - Create external CSS file and reference it from SVG files
+
+   **Note**: External CSS files only work when viewing SVG files directly. When embedded in HTML/Markdown, the external CSS won't be loaded.
+
+3. **External CSS URLs** (default: *NONE)
+   * Up to 5 additional external CSS file URLs to include in SVG files
+   * Format: `'https://example.com/custom.css'` or `'../styles/custom.css'`
+   * Use `*NONE` for unused slots
+
+4. **Border** (default: *NONE)
+   * `*NONE` - No border
+   * `*YES` - Default border color
+   * Any CSS color value: `'#000000'`, `'black'`, `'rgb(0,0,0)'`, etc.
+
+5. **Background** (default: *NONE)
+   * `*NONE` - Transparent background
+   * `*YES` - Default background color
+   * `*LIGHT` - Light background
+   * `*DARK` - Dark background
+   * Any CSS color value: `'#ffffff'`, `'white'`, `'rgb(255,255,255)'`, etc.
+
+Examples:
+
+```cl
+# Simple inline CSS with light/dark mode support
+CSS(*WEB *INLINE *NONE *NONE *NONE)
+
+# External CSS file
+CSS(*WEB 'mystyles.css' *NONE *NONE *NONE)
+
+# With custom styling and border
+CSS(*WEB *INLINE *NONE '#cccccc' '#f5f5f5')
+
+# Include external CSS libraries
+CSS(*WEB *INLINE 'https://example.com/theme.css' *NONE 'black' 'white')
+```
 
 ### File name parameters
 
