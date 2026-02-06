@@ -29,16 +29,17 @@ End-DS;
 
 Dcl-DS list_externals_T QUALIFIED TEMPLATE;
    count   INT(5);
-   entry  CHAR(128) DIM(5);
+   entry  VARCHAR(128) DIM(5);
 End-DS;
 
 Dcl-DS list_CSS_T QUALIFIED TEMPLATE;
    count      INT(5);
    create     CHAR(10);
-   createURL  CHAR(128);
-   externals  LIKEDS(list_externals_T);
+   createURL  VARCHAR(128);
+   offset_to_externals INT(5);
    border     VARCHAR(32);
    background VARCHAR(32);
+   externals  LIKEDS(list_externals_T);
 End-DS;
 
 Dcl-DS SVGfilename_structure_T QUALIFIED TEMPLATE;
@@ -95,6 +96,11 @@ Dcl-C #CRLF x'0D25';
 Dcl-S g_charWidth   UNS(5) INZ(12);
 Dcl-S g_charSize    UNS(5) INZ(20);
 
+// Function prototypes
+Dcl-PR f_escapeXML VARCHAR(512);
+   myText VARCHAR(256) CONST;
+End-PR;
+
 /INCLUDE 'QSYSCPY/DQCMDEXC.RPGLEINC'
 
 // Dcl-F QASCCPY DISK EXTFILE('QASCCPY') TEMPLATE;
@@ -149,9 +155,7 @@ Dcl-Proc MAIN;
       PI_IFS_Path          CHAR(128);
       PI_SVG_Filename    LIKEDS(SVGfilename_structure_T);
       PI_Output          LIKEDS(list_Output_T);
-      // PI_CSS               CHAR(128);
       PI_CSS             LIKEDS(list_CSS_T);
-      // PI_CSS_externals   LIKEDS(list_externals_T);
    End-PI;
 
    Dcl-DS #FileCount QUALIFIED;
@@ -169,6 +173,8 @@ Dcl-Proc MAIN;
 
    Dcl-S #root VARCHAR(80) INZ('');
 
+   Dcl-S h_CntDigits VARCHAR(5);
+   Dcl-S h_CreateURL VARCHAR(128);
    // --------------------------------------------------------------------------
    // create Directory
    #Cmd = 'MKDIR ''' + %TRIMR(PI_IFS_Path) + '''';
@@ -258,6 +264,18 @@ Dcl-Proc MAIN;
    #output.MD   = %lookup('*MD'  :PI_Output.entry) > 0;
 
    IF #output.HTML;
+      IF 0 = PI_SVG_Filename.CntDigits;
+         h_CntDigits = '*NONE';
+      ELSE;
+         h_CntDigits = %CHAR(PI_SVG_Filename.CntDigits);
+      ENDIF;
+
+      IF '*' = %SUBST(PI_CSS.createURL:1:1);
+         h_CreateURL = PI_CSS.createURL;
+      ELSE;
+         h_CreateURL ='''' + PI_CSS.createURL + '''';
+      ENDIF;
+
       f_writeLineHTML(
          '<!DOCTYPE html>' + #CRLF +
          '<html lang="en">' + #CRLF +
@@ -272,8 +290,8 @@ Dcl-Proc MAIN;
          '        code { display: block;' + #CRLF +
          '               font-family: Consolas, monospace; ' + #CRLF +
          '               border:1px solid grey;' + #CRLF +
-         '               background-color: #f0f0f0;' + #CRLF + 
-         '               color: #404040;' + #CRLF + 
+         '               background-color: #f0f0f0;' + #CRLF +
+         '               color: #404040;' + #CRLF +
          '               padding: 12px; }' + #CRLF +
          '    </style>' + #CRLF +
          '</head>' + #CRLF +
@@ -284,17 +302,17 @@ Dcl-Proc MAIN;
                                     %TRIMR(PI_SCNCPY.Name) + ')' +
                          ' PATH(''' + %TRIMR(PI_IFS_Path) + ''')' +
                          ' SVGNAME(''' + %TRIMR(PI_SVG_Filename.Prefix) + '''' +
-                                   ' ' + %TRIMR(PI_SVG_Filename.IncDate) + 
+                                   ' ' + %TRIMR(PI_SVG_Filename.IncDate) +
                                    ' ' + %TRIMR(PI_SVG_Filename.IncTime) +
-                                   ' ' + %CHAR(PI_SVG_Filename.CntDigits) +
+                                   ' ' + h_CntDigits +
                                    ' ''' + PI_SVG_Filename.IncSepChar + ''')' +
-                         ' OUTPUT(' + %CONCATARR(' ':PI_Output.entry) + ')' +     
+                         ' OUTPUT(' + %CONCATARR(' ':PI_Output.entry) + ')' +
                          ' CSS(' + PI_CSS.create +
-                           ' ''' + %TRIMR(PI_CSS.createURL) + '''' +
-                           ' ''' + %CONCATARR(''' ''':PI_CSS.externals.entry) + '''' +
+                           ' ' + h_createURL +
+                           ' (''' + %CONCATARR(''' ''':%TRIMR(PI_CSS.externals.entry)) + ''')' +
                            ' ''' + PI_CSS.border + '''' +
                            ' ''' + PI_CSS.background + '''' +
-                         ')' +     
+                         ')' +
          '</code>' + #CRLF
          );
    ENDIF;
@@ -317,8 +335,8 @@ Dcl-Proc MAIN;
    // now declare a second cursor to fetch the actual screen data for this screen
    EXEC SQL DECLARE CPYSCN2SVG_2 SCROLL CURSOR FOR
             SELECT SIROW, SIDATA,
-                   CASE WHEN CURCEN = '1' THEN '20' 
-                                          ELSE '19' END CONCAT CURDAT, 
+                   CASE WHEN CURCEN = '1' THEN '20'
+                                          ELSE '19' END CONCAT CURDAT,
                    CURTIM
             FROM QASCCPY SCNCPY
             WHERE SIROW <> ' '
@@ -340,7 +358,7 @@ Dcl-Proc MAIN;
       IF %ELEM(RS2) = 27;
          IF RS2(27).SIROW = '03 ';
             %ELEM(RS2) = 24;
-            EXEC SQL FETCH RELATIVE -3 FROM CPYSCN2SVG_2 
+            EXEC SQL FETCH RELATIVE -3 FROM CPYSCN2SVG_2
                       INTO :RS2_HLP;
          ENDIF;
       ENDIF;
@@ -493,8 +511,8 @@ Dcl-Proc f_svg;
                   '>');
 
    SELECT;
-      WHEN myCSS.create = '*NONE';
-      WHEN myCSS.create = '*INLINE';
+      WHEN myCSS.createURL = '*NONE';
+      WHEN myCSS.createURL = '*INLINE';
          f_writeLineSVG('<style type="text/css">' + #CRLF +
          '  <![CDATA[' + #CRLF +
          g_CSS_string +
@@ -571,7 +589,7 @@ Dcl-Proc f_svg;
          // (class changed, or we hit a blank after non-blanks)
          IF (#classString <> #lastClass AND #textBuffer <> '') OR
             (#char1 = *BLANK AND #textBuffer <> '');
-            
+
             // Write accumulated text
             f_writeLineSVG('<text x="' + %CHAR(#groupStartX) + '"' +
                            ' y="' + %CHAR(svgPosY) + '"' +
@@ -599,19 +617,10 @@ Dcl-Proc f_svg;
             ENDIF;
          ENDIF;
 
-         // Add character to buffer if not blank
-         IF #char1 <> *BLANK;
-            IF #textBuffer = '';
-               #groupStartX = svgPosX;
-               #groupStartCol = #col;
-               #lastClass = #classString;
-            ENDIF;
-            #textBuffer += #char1;
-         ENDIF;
-
          // Handle column separators (still individual lines)
+         // Do this BEFORE adding to buffer so we don't affect class comparison
          IF %SCAN(' HI BL CS':#classString) > 0;
-            #classString = %SCANRPL(' HI BL CS':' HIBLCS':#classString);
+            // Don't draw CS lines for HIBLCS combination
          ELSE;
             IF %SCAN(' CS':#classString) > 0;
                f_writeLineSVG('<line x1="' + %CHAR(f_subToZero(svgPosX:1)) + '"' +
@@ -625,6 +634,16 @@ Dcl-Proc f_svg;
                                    ' y2="' + %CHAR(f_subToZero(svgPosY:2)) + '"' +
                                    ' class="l_CS" />');
             ENDIF;
+         ENDIF;
+
+         // Add character to buffer if not blank
+         IF #char1 <> *BLANK;
+            IF #textBuffer = '';
+               #groupStartX = svgPosX;
+               #groupStartCol = #col;
+               #lastClass = #classString;
+            ENDIF;
+            #textBuffer += #char1;
          ENDIF;
 
          svgPosX += g_charWidth;
@@ -834,7 +853,7 @@ Dcl-Proc f_escapeXML;
    Dcl-S rtnText VARCHAR(512);
 
    rtnText = myText;
-   
+
    // Replace special XML characters
    rtnText = %SCANRPL('&':'&amp;':rtnText);
    rtnText = %SCANRPL('<':'&lt;':rtnText);

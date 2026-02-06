@@ -57,11 +57,11 @@
                           DFT(*WEB) RSTD(*YES) +
                           VALUES((*NONE) (*WEB) (*LIGHT) (*DARK)) +
                           PROMPT('Create CSS')
-             ELEM       TYPE(*PNAME) CASE(*MIXED) LEN(128) +
+             ELEM       TYPE(*PNAME) CASE(*MIXED) LEN(128) VARY(*YES *INT2) +
                           DFT(*INLINE) +
                           SPCVAL((*INLINE) (*NONE)) +
                           PROMPT('Create CSS inline / external')
-             ELEM       TYPE(*PNAME) CASE(*MIXED) LEN(128) MAX(5) +
+             ELEM       TYPE(*PNAME) CASE(*MIXED) LEN(128) VARY(*YES *INT2) MAX(5) +
                           DFT(*NONE) SPCVAL((*NONE)) +
                           PROMPT('URLs for external CSS-files')
              ELEM       TYPE(*CHAR) LEN(32) VARY(*YES *INT2) CASE(*MIXED) +
