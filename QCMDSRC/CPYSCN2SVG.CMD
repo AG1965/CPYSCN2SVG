@@ -15,14 +15,17 @@
                           RSTD(*YES) VALUES(*NONE *HTML *MD) +
                           PROMPT('HTML / Markdown output')
 
-             PARM       KWD(CSS) TYPE(*PNAME) CASE(*MIXED) LEN(128) +
+             /* PARM       KWD(CSS) TYPE(*PNAME) CASE(*MIXED) LEN(128) +
                           DFT(*INLINE) +
                           SPCVAL((*INLINE) (*NONE)) +
+                          PROMPT('Create CSS inline / external') */
+
+             PARM       KWD(CSS) TYPE(CSS) +
                           PROMPT('Create CSS inline / external')
 
-             PARM       KWD(CSSEXT) TYPE(*PNAME) CASE(*MIXED) LEN(128) MAX(5) +
+             /* PARM       KWD(CSSEXT) TYPE(*PNAME) CASE(*MIXED) LEN(128) MAX(5) +
                           DFT(*NONE) SPCVAL((*NONE)) +
-                          PROMPT('URLs for external CSS-files')
+                          PROMPT('URLs for external CSS-files') */
 
 
  QUALOBJ:    QUAL       TYPE(*NAME) LEN(10)
@@ -49,3 +52,23 @@
                             DFT('_') +
                             SPCVAL((*NONE '')) +
                             PROMPT('Separator character')
+
+ CSS:        ELEM       TYPE(*CHAR) LEN(10) +
+                          DFT(*WEB) RSTD(*YES) +
+                          VALUES((*NONE) (*WEB) (*LIGHT) (*DARK)) +
+                          PROMPT('Create CSS')
+             ELEM       TYPE(*PNAME) CASE(*MIXED) LEN(128) +
+                          DFT(*INLINE) +
+                          SPCVAL((*INLINE) (*NONE)) +
+                          PROMPT('Create CSS inline / external')
+             ELEM       TYPE(*PNAME) CASE(*MIXED) LEN(128) MAX(5) +
+                          DFT(*NONE) SPCVAL((*NONE)) +
+                          PROMPT('URLs for external CSS-files')
+             ELEM       TYPE(*CHAR) LEN(32) VARY(*YES *INT2) CASE(*MIXED) +
+                          DFT(*NONE) +
+                          SPCVAL((*NONE) (*YES)) +
+                          PROMPT('Border around SVG images')
+             ELEM       TYPE(*CHAR) LEN(32) VARY(*YES *INT2) CASE(*MIXED) +
+                          DFT(*NONE) +
+                          SPCVAL((*NONE) (*YES) (*LIGHT) (*DARK)) +
+                          PROMPT('Background for SVG images')

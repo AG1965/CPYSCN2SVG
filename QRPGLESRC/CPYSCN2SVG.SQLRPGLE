@@ -12,8 +12,9 @@ Dcl-PR MAIN EXTPGM('CPYSCN2SVG');
    IFS_Path              CHAR(128);
    SVGfilenameStruct   LIKEDS(SVGfilename_structure_T);
    Output              LIKEDS(list_Output_T);
-   CSS                   CHAR(128);
-   CSS_externals       LIKEDS(list_externals_T);
+   // CSS                   CHAR(128);
+   CSS                 LIKEDS(list_CSS_T);
+   // CSS_externals       LIKEDS(list_externals_T);
 End-PR;
 
 Dcl-DS qualObj_T QUALIFIED TEMPLATE;
@@ -31,6 +32,15 @@ Dcl-DS list_externals_T QUALIFIED TEMPLATE;
    entry  CHAR(128) DIM(5);
 End-DS;
 
+Dcl-DS list_CSS_T QUALIFIED TEMPLATE;
+   count      INT(5);
+   create     CHAR(10);
+   createURL  CHAR(128);
+   externals  LIKEDS(list_externals_T);
+   border     VARCHAR(32);
+   background VARCHAR(32);
+End-DS;
+
 Dcl-DS SVGfilename_structure_T QUALIFIED TEMPLATE;
    NumberOfElements   INT(5);
    Prefix            CHAR( 64);
@@ -41,15 +51,44 @@ Dcl-DS SVGfilename_structure_T QUALIFIED TEMPLATE;
 End-DS;
 
 
-Dcl-DS colorsGrnOnWht QUALIFIED;
-   grn  CHAR(7) INZ('#006400');
-   wht  CHAR(7) INZ('#000000');
-   blu  CHAR(7) INZ('#003399');
-   trq  CHAR(7) INZ('#008b8b');
-   red  CHAR(7) INZ('#b00020');
-   pnk  CHAR(7) INZ('#a000a0');
-   ylw  CHAR(7) INZ('#9a8700');
+Dcl-DS g_Colors QUALIFIED;
+   DFT    VARCHAR(64);
+   HI     VARCHAR(64);
+   BL     VARCHAR(64);
+   CS     VARCHAR(64);
+   BLCS   VARCHAR(64);
+   CSHI   VARCHAR(64);
+   HIBLCS VARCHAR(64);
+   l_UL   VARCHAR(64);
+   l_CS   VARCHAR(64);
 End-DS;
+
+
+Dcl-ENum COLORS_LIGHT QUALIFIED;
+   DFT       '#006400';
+   HI        '#000000';
+   BL        '#b00020';
+   CS        '#008b8b';
+   BLCS      '#a000a0';
+   CSHI      '#9a8700';
+   HIBLCS    '#003399';
+   l_UL      'currentColor';
+   l_CS      '#008b8b';
+End-ENum;
+
+Dcl-ENum COLORS_DARK  QUALIFIED;
+   DFT       '#00ff00';
+   HI        '#f0f0f0';
+   BL        '#ff0000';
+   CS        '#00ffff';
+   BLCS      '#ff1aff';
+   CSHI      '#ffff00';
+   HIBLCS    '#7890f0';
+   l_UL      'currentColor';
+   l_CS      '#00ffff';
+End-ENum;
+
+
 
 Dcl-C #CRLF x'0D25';
 
@@ -110,8 +149,9 @@ Dcl-Proc MAIN;
       PI_IFS_Path          CHAR(128);
       PI_SVG_Filename    LIKEDS(SVGfilename_structure_T);
       PI_Output          LIKEDS(list_Output_T);
-      PI_CSS               CHAR(128);
-      PI_CSS_externals   LIKEDS(list_externals_T);
+      // PI_CSS               CHAR(128);
+      PI_CSS             LIKEDS(list_CSS_T);
+      // PI_CSS_externals   LIKEDS(list_externals_T);
    End-PI;
 
    Dcl-DS #FileCount QUALIFIED;
@@ -126,6 +166,9 @@ Dcl-Proc MAIN;
 
    Dcl-S #Last_IFS_SVG_FileName  LIKE(#IFS_SVG_FileName) INZ('');
    Dcl-S #count_sameFileName     UNS(5) INZ(0);
+
+   Dcl-S #root VARCHAR(80) INZ('');
+
    // --------------------------------------------------------------------------
    // create Directory
    #Cmd = 'MKDIR ''' + %TRIMR(PI_IFS_Path) + '''';
@@ -141,26 +184,63 @@ Dcl-Proc MAIN;
                         '.md';
 
 
-   g_CSS_string =
-   ' :root { color-scheme: light dark; }' + #CRLF +
+   SELECT;
+      WHEN PI_CSS.create = '*NONE';
+      WHEN PI_CSS.create = '*WEB';
+         #root = ' :root { color-scheme: light dark; }' + #CRLF;
+         g_Colors.DFT      = 'light-dark( ' + COLORS_LIGHT.DFT     + ', ' + COLORS_DARK.DFT     + ')';
+         g_Colors.HI       = 'light-dark( ' + COLORS_LIGHT.HI      + ', ' + COLORS_DARK.HI      + ')';
+         g_Colors.BL       = 'light-dark( ' + COLORS_LIGHT.BL      + ', ' + COLORS_DARK.BL      + ')';
+         g_Colors.CS       = 'light-dark( ' + COLORS_LIGHT.CS      + ', ' + COLORS_DARK.CS      + ')';
+         g_Colors.BLCS     = 'light-dark( ' + COLORS_LIGHT.BLCS    + ', ' + COLORS_DARK.BLCS    + ')';
+         g_Colors.CSHI     = 'light-dark( ' + COLORS_LIGHT.CSHI    + ', ' + COLORS_DARK.CSHI    + ')';
+         g_Colors.HIBLCS   = 'light-dark( ' + COLORS_LIGHT.HIBLCS  + ', ' + COLORS_DARK.HIBLCS  + ')';
+         g_Colors.l_UL     = COLORS_LIGHT.l_UL;
+         g_Colors.l_CS     = COLORS_LIGHT.l_CS;
+      WHEN PI_CSS.create = '*DARK';
+         g_Colors.DFT      = COLORS_DARK.DFT;
+         g_Colors.HI       = COLORS_DARK.HI;
+         g_Colors.BL       = COLORS_DARK.BL;
+         g_Colors.CS       = COLORS_DARK.CS;
+         g_Colors.BLCS     = COLORS_DARK.BLCS;
+         g_Colors.CSHI     = COLORS_DARK.CSHI;
+         g_Colors.HIBLCS   = COLORS_DARK.HIBLCS;
+         g_Colors.l_UL     = COLORS_DARK.l_UL;
+         g_Colors.l_CS     = COLORS_DARK.l_CS;
+      OTHER;
+         g_Colors.DFT      = COLORS_LIGHT.DFT;
+         g_Colors.HI       = COLORS_LIGHT.HI;
+         g_Colors.BL       = COLORS_LIGHT.BL;
+         g_Colors.CS       = COLORS_LIGHT.CS;
+         g_Colors.BLCS     = COLORS_LIGHT.BLCS;
+         g_Colors.CSHI     = COLORS_LIGHT.CSHI;
+         g_Colors.HIBLCS   = COLORS_LIGHT.HIBLCS;
+         g_Colors.l_UL     = COLORS_LIGHT.l_UL;
+         g_Colors.l_CS     = COLORS_LIGHT.l_CS;
+   ENDSL;
+
+
+
+   g_CSS_string = #root +
    ' .t {  font-family: IBM3270, Consolas, monospace;' + #CRLF +
    '       font-size: ' + %CHAR(g_charSize) + 'px;' + #CRLF +
-   '       fill: light-dark( #006400, #00ff00);' + #CRLF +
+   '       fill: ' + g_Colors.DFT + ';' + #CRLF +
    '       text-align: center; }' + #CRLF +
-   ' .HI { font-weight: bold; fill: light-dark( #000000, #f0f0f0); }' + #CRLF +
-   ' .BL { fill: light-dark( #b00020, #ff0000); }' + #CRLF +
-   ' .CS { fill: light-dark( #008b8b, #00ffff); }' + #CRLF +
-   ' .BL.CS { fill: light-dark( #a000a0, #ff1aff); }' + #CRLF +
-   ' .CS.HI { fill: light-dark( #9a8700, #ffff00); }' + #CRLF +
-   ' .HI.BL.CS { fill: light-dark( #003399, #7890f0); }' + #CRLF +
-   ' .l_UL { stroke: currentColor; stroke-width: 1px; }' + #CRLF +
-   ' .l_CS { stroke: light-dark( #008b8b, #00ffff); stroke-width: 1px; stroke-opacity: 0.5; }' + #CRLF;
+   ' .HI { font-weight: bold; fill: ' + g_Colors.HI + '; }' + #CRLF +
+   ' .BL { fill: ' + g_Colors.BL + '; }' + #CRLF +
+   ' .CS { fill: ' + g_Colors.CS + '; }' + #CRLF +
+   ' .BL.CS { fill: ' + g_COLORS.BLCS + '; }' + #CRLF +
+   ' .CS.HI { fill: ' + g_COLORS.CSHI + '; }' + #CRLF +
+   ' .HI.BL.CS { fill: ' + g_COLORS.HIBLCS + '; }' + #CRLF +
+   ' .l_UL { stroke: ' + g_COLORS.l_UL + '; stroke-width: 1px; }' + #CRLF +
+   ' .l_CS { stroke: ' + g_COLORS.l_CS + '; stroke-width: 1px; stroke-opacity: 0.5; }' + #CRLF;
+
 
    // name of the css to be created in IFS
    #IFS_CSS_FileName = PI_CSS;
-   IF PI_CSS <> '*INLINE' AND
-      PI_CSS <> '*NONE';
-      #IFS_CSS_FileName = %TRIMR(PI_CSS);
+   IF PI_CSS.createURL <> '*INLINE' AND
+      PI_CSS.createURL <> '*NONE';
+      #IFS_CSS_FileName = %TRIMR(PI_CSS.createURL);
       IF %SUBST(#IFS_CSS_FileName:%LEN(#IFS_CSS_FileName) - 3:4) <> '.css';
          #IFS_CSS_FileName += '.css';
       ENDIF;
@@ -209,8 +289,12 @@ Dcl-Proc MAIN;
                                    ' ' + %CHAR(PI_SVG_Filename.CntDigits) +
                                    ' ''' + PI_SVG_Filename.IncSepChar + ''')' +
                          ' OUTPUT(' + %CONCATARR(' ':PI_Output.entry) + ')' +     
-                         ' CSS(''' + PI_CSS + ''')' +
-                         ' CSSEXT(' + %CONCATARR(' ':PI_CSS_externals.entry) + ')' +     
+                         ' CSS(' + PI_CSS.create +
+                           ' ''' + %TRIMR(PI_CSS.createURL) + '''' +
+                           ' ''' + %CONCATARR(''' ''':PI_CSS.externals.entry) + '''' +
+                           ' ''' + PI_CSS.border + '''' +
+                           ' ''' + PI_CSS.background + '''' +
+                         ')' +     
          '</code>' + #CRLF
          );
    ENDIF;
@@ -319,8 +403,7 @@ Dcl-Proc MAIN;
       #IFS_SVG_FullName = %TRIMR(PI_IFS_Path) + '/' + #IFS_SVG_FileName;
 
       // generate the svg file
-      f_svg(#IFS_CSS_FileName:
-            PI_CSS_externals);
+      f_svg(PI_CSS);
 
       IF #output.HTML;
          f_writeLineHTML(
@@ -361,8 +444,7 @@ End-Proc;
 Dcl-Proc f_svg;
 
    Dcl-PI *N;
-      myCSS            VARCHAR(128) CONST;
-      myCSS_externals  LIKEDS(list_externals_T) CONST;
+      myCSS            LIKEDS(list_CSS_T) CONST;
    End-PI;
 
    Dcl-S charHeight  UNS(5);
@@ -401,8 +483,8 @@ Dcl-Proc f_svg;
                   '>');
 
    SELECT;
-      WHEN myCSS = '*NONE';
-      WHEN myCSS = '*INLINE';
+      WHEN myCSS.create = '*NONE';
+      WHEN myCSS.create = '*INLINE';
          f_writeLineSVG('<style type="text/css">' + #CRLF +
          '  <![CDATA[' + #CRLF +
          g_CSS_string +
@@ -411,20 +493,53 @@ Dcl-Proc f_svg;
       OTHER;
          f_writeLineSVG('<link xmlns="http://www.w3.org/1999/xhtml"' +
                         ' rel="stylesheet"' +
-                        ' href="' + myCSS + '"' +
+                        ' href="' + myCSS.createURL + '"' +
                         ' type="text/css" />');
    ENDSL;
 
-   FOR #i = 1 TO myCSS_externals.count;
-      IF %TRIMR(myCSS_externals.entry(#i)) = '' OR
-                myCSS_externals.entry(#i)  = '*NONE';
+   FOR #i = 1 TO myCSS.externals.count;
+      IF %TRIMR(myCSS.externals.entry(#i)) = '' OR
+                myCSS.externals.entry(#i)  = '*NONE';
          ITER;
       ENDIF;
       f_writeLineSVG('<link xmlns="http://www.w3.org/1999/xhtml"' +
                      ' rel="stylesheet"' +
-                     ' href="' + %TRIMR(myCSS_externals.entry(#i)) + '"' +
+                     ' href="' + %TRIMR(myCSS.externals.entry(#i)) + '"' +
                      ' type="text/css" />');
    ENDFOR;
+
+   SELECT;
+      WHEN myCSS.border     <> '*NONE'
+       AND myCSS.background <> '*NONE';
+
+         f_writeLineSVG('<rect x="0" y="0" width="' + %CHAR(svgWidth) + '"' +
+                              ' height="' + %CHAR(svgHeight) + '"' +
+                              ' fill="' + %TRIMR(myCSS.background) + '"' +
+                              ' stroke="' + %TRIMR(myCSS.border) + '"' +
+                              ' stroke-width="4" />');
+
+      WHEN myCSS.background <> '*NONE';
+
+         f_writeLineSVG('<rect x="0" y="0" width="' + %CHAR(svgWidth) + '"' +
+                              ' height="' + %CHAR(svgHeight) + '"' +
+                              ' fill="' + %TRIMR(myCSS.background) + '" />');
+
+      WHEN myCSS.border <> '*NONE';
+
+         f_writeLineSVG('<rect x="0" y="0" width="' + %CHAR(svgWidth) + '"' +
+                              ' height="' + %CHAR(svgHeight) + '"' +
+                              ' stroke="' + %TRIMR(myCSS.border) + '"' +
+                              ' stroke-width="4" />');
+
+   ENDSL;
+
+
+   IF myCSS.border     <> '' AND
+      myCSS.background <> '';
+   ENDIF;
+
+
+
 
    // TODO: background rectangle for reverse image
    // f_writeLineSVG('<rect x="0" y="0" width="1" height="1" class="t" />');
