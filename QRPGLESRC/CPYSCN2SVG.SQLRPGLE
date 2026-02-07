@@ -411,7 +411,7 @@ Dcl-Proc MAIN;
       // if the file name is equal to the last file name, include a counter to prevent overwriting
       IF #IFS_SVG_FileName = #Last_IFS_SVG_FileName;
          #count_sameFileName += 1;
-         #IFS_SVG_FileName += ' (' + %TRIM(%CHAR(#count_sameFileName)) + ')';
+         #IFS_SVG_FileName += '_(' + %TRIM(%CHAR(#count_sameFileName)) + ')';
       ELSE;
          #Last_IFS_SVG_FileName = #IFS_SVG_FileName;
          #count_sameFileName = 1;
@@ -481,12 +481,6 @@ Dcl-Proc f_svg;
    Dcl-S #svgString   VARCHAR(1024);
 
    Dcl-S #i UNS(5);
-
-   // Variables for grouping consecutive characters
-   Dcl-S #textBuffer    VARCHAR(256);
-   Dcl-S #lastClass     VARCHAR(18);
-   Dcl-S #groupStartX   UNS(10);
-   Dcl-S #groupStartCol UNS(5);
 
    // Variables for grouping underlines
    Dcl-S #ulStartX      UNS(10);
@@ -573,10 +567,6 @@ Dcl-Proc f_svg;
    // f_writeLineSVG('<rect x="0" y="0" width="1" height="1" class="t" />');
 
    FOR #row = 1 TO screen.rows;
-      RESET #textBuffer;
-      RESET #lastClass;
-      #groupStartX = 0;
-      #groupStartCol = 0;
       #ulActive = *OFF;
 
       FOR #col = 1 TO screen.columns;
@@ -585,17 +575,12 @@ Dcl-Proc f_svg;
                                 %SUBST(RS2(#row).SIDATA:#col:1):
                                 #classString);
 
-         // Check if we need to flush the text buffer
-         // (class changed, or we hit a blank after non-blanks)
-         IF (#classString <> #lastClass AND #textBuffer <> '') OR
-            (#char1 = *BLANK AND #textBuffer <> '');
-
-            // Write accumulated text
-            f_writeLineSVG('<text x="' + %CHAR(#groupStartX) + '"' +
+         // Write each character individually for proper monospace positioning
+         IF #char1 <> *BLANK;
+            f_writeLineSVG('<text x="' + %CHAR(svgPosX) + '"' +
                            ' y="' + %CHAR(svgPosY) + '"' +
-                           ' class="t' + #lastClass + '">' +
-                           f_escapeXML(#textBuffer) + '</text>');
-            RESET #textBuffer;
+                           ' class="t' + #classString + '">' +
+                           f_escapeXML(#char1) + '</text>');
          ENDIF;
 
          // Handle underline grouping
@@ -636,26 +621,8 @@ Dcl-Proc f_svg;
             ENDIF;
          ENDIF;
 
-         // Add character to buffer if not blank
-         IF #char1 <> *BLANK;
-            IF #textBuffer = '';
-               #groupStartX = svgPosX;
-               #groupStartCol = #col;
-               #lastClass = #classString;
-            ENDIF;
-            #textBuffer += #char1;
-         ENDIF;
-
          svgPosX += g_charWidth;
       ENDFOR;
-
-      // Flush any remaining text at end of row
-      IF #textBuffer <> '';
-         f_writeLineSVG('<text x="' + %CHAR(#groupStartX) + '"' +
-                        ' y="' + %CHAR(svgPosY) + '"' +
-                        ' class="t' + #lastClass + '">' +
-                        f_escapeXML(#textBuffer) + '</text>');
-      ENDIF;
 
       // Close any open underline at end of row
       IF #ulActive;
